@@ -1,0 +1,1 @@
+let socket: WebSocket | null = null
