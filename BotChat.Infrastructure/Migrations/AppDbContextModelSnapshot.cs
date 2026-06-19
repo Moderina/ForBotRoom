@@ -19,8 +19,7 @@ namespace BotChat.Infrastructure.Migrations
 
             modelBuilder.Entity("BotChat.Domain.Agents.Bot", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("UserId")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
@@ -30,21 +29,75 @@ namespace BotChat.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("UserId")
+                    b.HasKey("UserId");
+
+                    b.ToTable("Bots", (string)null);
+                });
+
+            modelBuilder.Entity("BotChat.Domain.Chats.Chat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Disabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.ToTable("Chats", (string)null);
+                });
 
-                    b.ToTable("Bots", (string)null);
+            modelBuilder.Entity("BotChat.Domain.Chats.ChatParticipant", b =>
+                {
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ChatId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ChatParticipant");
+                });
+
+            modelBuilder.Entity("BotChat.Domain.Chats.Message", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("ChatId");
+
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("BotChat.Domain.User", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Active")
@@ -71,11 +124,57 @@ namespace BotChat.Infrastructure.Migrations
 
             modelBuilder.Entity("BotChat.Domain.Agents.Bot", b =>
                 {
-                    b.HasOne("BotChat.Domain.User", null)
-                        .WithOne()
+                    b.HasOne("BotChat.Domain.User", "User")
+                        .WithOne("Bot")
                         .HasForeignKey("BotChat.Domain.Agents.Bot", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BotChat.Domain.Chats.ChatParticipant", b =>
+                {
+                    b.HasOne("BotChat.Domain.Chats.Chat", "Chat")
+                        .WithMany("Participants")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BotChat.Domain.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BotChat.Domain.Chats.Message", b =>
+                {
+                    b.HasOne("BotChat.Domain.User", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BotChat.Domain.Chats.Chat", null)
+                        .WithMany()
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BotChat.Domain.Chats.Chat", b =>
+                {
+                    b.Navigation("Participants");
+                });
+
+            modelBuilder.Entity("BotChat.Domain.User", b =>
+                {
+                    b.Navigation("Bot");
                 });
 #pragma warning restore 612, 618
         }

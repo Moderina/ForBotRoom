@@ -11,10 +11,10 @@ public class BotConfiguration : IEntityTypeConfiguration<Bot>
 {
     public void Configure(EntityTypeBuilder<Bot> builder)
     {
-        builder.HasKey(x => x.Id);
-
+        builder.HasKey(x => x.UserId);
+        
         builder.Property(x => x.UserId)
-            .IsRequired();
+            .ValueGeneratedNever();
 
         builder.Property(x => x.PersonalityData).HasConversion(
             v => JsonSerializer.Serialize(v, JsonHelper.CamelCase),
@@ -23,8 +23,8 @@ public class BotConfiguration : IEntityTypeConfiguration<Bot>
         
         builder.Ignore(x => x.Mood);
 
-        builder.HasOne<User>()
-            .WithOne()
+        builder.HasOne(b => b.User)
+            .WithOne(u => u.Bot)
             .HasForeignKey<Bot>(b => b.UserId);
 
         builder.ToTable("Bots");

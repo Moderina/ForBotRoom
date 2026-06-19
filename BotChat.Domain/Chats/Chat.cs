@@ -4,18 +4,18 @@ namespace BotChat.Domain.Chats;
 
 public class Chat
 {
-    public int Id { get; }
-    public string Name { get; } = "";
-    public Bot Bot { get; }
+    public Guid Id { get; private set; }
+    public string Name { get; private set; } = string.Empty;
+    
+    public ICollection<ChatParticipant> Participants { get; set; } = [];
     
     public bool Disabled { get; set; } = false;
 
     public Chat() {}
 
-    public Chat(int id, string name, Bot bot)
+    public Chat(string name)
     {
-        Id = id;
+        Id = Guid.NewGuid();
         Name = name;
-        Bot = bot;
     }
 }

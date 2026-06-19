@@ -1,5 +1,6 @@
 using BotChat.Domain;
 using BotChat.Domain.Agents;
+using BotChat.Domain.Chats;
 using Microsoft.EntityFrameworkCore;
 
 namespace BotChat.Infrastructure.Persistant;
@@ -13,6 +14,7 @@ public class AppDbContext : DbContext
     
     public DbSet<User> Users => Set<User>();
     public DbSet<Bot> Bots => Set<Bot>();
+    public DbSet<Message> Messages => Set<Message>();
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

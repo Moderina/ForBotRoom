@@ -1,12 +1,12 @@
-using BotChat.Domain;
+using BotChat.Domain.Chats;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BotChat.Infrastructure.Configs;
 
-public class UserConfiguration : IEntityTypeConfiguration<User>
+public class ChatConfiguration : IEntityTypeConfiguration<Chat>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public void Configure(EntityTypeBuilder<Chat> builder)
     {
         builder.HasKey(x => x.Id);
         
@@ -15,8 +15,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(x => x.Name)
             .IsRequired()
-            .HasMaxLength(50);
-
-        builder.ToTable("Users");
+            .HasMaxLength(100);
+        
+        builder.ToTable("Chats");
     }
 }
