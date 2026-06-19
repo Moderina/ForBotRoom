@@ -1,10 +1,13 @@
 using BotChat.App.DI;
+using BotChat.App.Services;
+using BotChat.App.UserLogic;
 using BotChat.Infrastructure.DI;
+using BotChat.Infrastructure.Persistant;
+using BotChat.Infrastructure.Persistant.Repositories;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options =>
-{
+builder.Services.AddCors(options => {
     options.AddPolicy("AllowVueDev", policy =>
     {
         policy.WithOrigins(["http://localhost:5174", "http://192.168.100.3:5174"]) 
@@ -19,10 +22,15 @@ builder.Services.AddApplication();
 builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
 
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 var app = builder.Build();
 
-//dev
-app.UseCors("AllowVueDev");
+using var scope = app.Services.CreateScope();
+var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+await DbInit.InitializeAsync(db);
+
 
 app.MapControllers();
 
@@ -30,6 +38,7 @@ app.MapControllers();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseCors("AllowVueDev");
 }
 
 app.UseHttpsRedirection();

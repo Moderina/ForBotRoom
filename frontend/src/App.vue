@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import Main from "@/pages/Main.vue";
+import UserProfile from "@/components/UserProfile.vue";
 </script>
 
 <template>
   <div class="app">
     <Main/>
+    <UserProfile />
   </div>
 
 </template>
