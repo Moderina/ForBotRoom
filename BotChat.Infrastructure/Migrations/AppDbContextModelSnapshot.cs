@@ -52,7 +52,7 @@ namespace BotChat.Infrastructure.Migrations
                     b.ToTable("Chats", (string)null);
                 });
 
-            modelBuilder.Entity("BotChat.Domain.Chats.ChatParticipant", b =>
+            modelBuilder.Entity("BotChat.Domain.Chats.ChatMember", b =>
                 {
                     b.Property<Guid>("ChatId")
                         .HasColumnType("TEXT");
@@ -64,7 +64,7 @@ namespace BotChat.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ChatParticipant");
+                    b.ToTable("ChatMembers");
                 });
 
             modelBuilder.Entity("BotChat.Domain.Chats.Message", b =>
@@ -133,7 +133,7 @@ namespace BotChat.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BotChat.Domain.Chats.ChatParticipant", b =>
+            modelBuilder.Entity("BotChat.Domain.Chats.ChatMember", b =>
                 {
                     b.HasOne("BotChat.Domain.Chats.Chat", "Chat")
                         .WithMany("Participants")

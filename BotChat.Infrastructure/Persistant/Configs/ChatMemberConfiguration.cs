@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BotChat.Infrastructure.Configs;
 
-public class ChatParticipantConfiguration : IEntityTypeConfiguration<ChatParticipant>
+public class ChatMemberConfiguration : IEntityTypeConfiguration<ChatMember>
 {
-    public void Configure(EntityTypeBuilder<ChatParticipant> builder)
+    public void Configure(EntityTypeBuilder<ChatMember> builder)
     {
         builder.HasKey(x => new { x.ChatId, x.UserId });
 

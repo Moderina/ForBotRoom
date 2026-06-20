@@ -7,7 +7,7 @@ public class Chat
     public Guid Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
     
-    public ICollection<ChatParticipant> Participants { get; set; } = [];
+    public ICollection<ChatMember> Participants { get; set; } = [];
     
     public bool Disabled { get; set; } = false;
 
