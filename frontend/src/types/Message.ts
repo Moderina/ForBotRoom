@@ -1,6 +1,6 @@
-export interface IMessage {
+export interface Message {
     content: string
-    class: "user" | "agent"
-    authorId: number
-    chatId: number
+    class: "user" | "bot"
+    authorId: string
+    chatId: string
 }

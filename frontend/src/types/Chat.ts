@@ -1,6 +1,6 @@
 import type {IMessage} from "@/types/Message.ts";
 
-export interface IChat {
+export interface Chat {
     id: number
     name: string
     history: IMessage[]

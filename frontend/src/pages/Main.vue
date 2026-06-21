@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ChatsList from "@/layouts/ChatsList.vue";
-import Chat from "@/layouts/Chat.vue";
+import ChatsList from "@/views/ChatsListView.vue";
+import Chat from "@/views/ChatView.vue";
 
 import { onMounted, ref } from "vue";
 import { getPing } from "../api/apiTypes";

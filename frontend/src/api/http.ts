@@ -4,9 +4,12 @@ export async function api<T>(
     path: string,
     options?: RequestInit
 ): Promise<T> {
+    const token = localStorage.getItem("token");
+    
     const response = await fetch(`${API_URL}${path}`, {
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
             ...options?.headers,
         },
         ...options,

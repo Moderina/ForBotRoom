@@ -1,3 +1,4 @@
+using BotChat.App.ChatLogic;
 using BotChat.App.DI;
 using BotChat.App.Services;
 using BotChat.App.UserLogic;
@@ -24,6 +25,9 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
+builder.Services.AddScoped<IChatMemberRepository, ChatMemberRepository>();
 
 var app = builder.Build();
 
