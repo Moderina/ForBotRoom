@@ -31,6 +31,8 @@ builder.Services.AddScoped<IChatMemberRepository, ChatMemberRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
