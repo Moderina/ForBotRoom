@@ -22,12 +22,13 @@ public class ChatRepository : IChatRepository
         return _db.Chats.FindAsync(chatId).AsTask();
     }
 
-    public Task AddChatAsync(Chat chat)
+    public async Task AddChatAsync(Chat chat)
     {
         _db.Chats.Add(chat);
-        return _db.SaveChangesAsync();
+        await _db.SaveChangesAsync();
     }
 
+    //TODO: move finding chat to service
     public Task DeleteChatAsync(long chatId)
     {
         var chat = _db.Chats.Find(chatId);

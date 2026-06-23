@@ -1,7 +1,7 @@
-import type {IMessage} from "@/types/Message.ts";
+import type {Message} from "@/types/Message.ts";
 
 export interface Chat {
-    id: number
+    id: string
     name: string
-    history: IMessage[]
+    history: Message[]
 }

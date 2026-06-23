@@ -19,7 +19,7 @@ public class ChatMemberRepository : IChatMemberRepository
 
     public Task AddParticipantAsync(ChatMember member)
     {
-        _db.ChatMembers.AddAsync(member);
+        _db.ChatMembers.Add(member);
         return _db.SaveChangesAsync();
     }
 

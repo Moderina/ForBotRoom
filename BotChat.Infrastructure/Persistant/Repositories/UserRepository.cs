@@ -13,8 +13,8 @@ public class UserRepository : IUserRepository
         _db = db;
     }
 
-    public async Task<User?> GetUserAsync()
+    public Task<User?> GetUserAsync()
     {
-        return await _db.Users.FirstOrDefaultAsync();
+        return _db.Users.FirstOrDefaultAsync();
     }
 }

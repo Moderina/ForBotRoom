@@ -10,17 +10,37 @@ const userStore = useUserStore()
 const chatName = ref("")
 const messagesDiv = ref<HTMLDivElement | null>(null)
 const { messages } = storeToRefs(chatStore)
+const input = ref("")
 
+async function sendMessage() {
+  if (!input.value.trim()) return
+  console.log(input.value)
 
+  const text = input.value
+  input.value = ""
+
+  chatStore.sendMessage(text)
+}
+
+//chat change
 watch(() => chatStore.currentChat, async (newchat, oldchat) => {
   console.log("Zmieniono chat! Nowy id:", newchat);
 
   chatName.value = newchat?.name ?? "";
 });
+
+//message received
+watch(messages, async () => {
+  await nextTick()
+
+  if (messagesDiv.value) {
+    messagesDiv.value.scrollTop =
+        messagesDiv.value.scrollHeight
+  }
+})
 </script>
 
 <template>
-  <div>Chat View</div>
   <div class="chat-view">
     <div class="chat-title">{{ chatName ? 'Chatting with ' + chatName : 'Select a chat' }}</div>
 
@@ -35,7 +55,7 @@ watch(() => chatStore.currentChat, async (newchat, oldchat) => {
         </div>
       </div>
 
-<!--      <input v-model="input" placeholder="Napisz wiadomość..." @keydown.enter="sendMessage" />-->
+      <input v-model="input" placeholder="Napisz wiadomość..." @keydown.enter="sendMessage" />
     </div>
   </div>
 </template>
