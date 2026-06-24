@@ -1,7 +1,7 @@
-import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
+import {ref} from 'vue'
+import {defineStore} from 'pinia'
 import type {Chat} from "@/types/Chat.ts";
-import {getChatsList, createChat} from "@/api/chatsApi.ts";
+import {createChat, getChatsList} from "@/api/chatsApi.ts";
 import type {Message} from "@/types/Message.ts";
 import {useUserStore} from "@/stores/userStore.ts";
 import * as MessageApi from "@/api/MessageApi.ts";
@@ -31,7 +31,9 @@ export const useChatStore = defineStore('chat', () => {
   async function openChat(chat: Chat) {
     currentChat.value = chat;
     messages.value = [];
-    
+
+    const params = {};
+    messages.value = await MessageApi.getMessagesHistory(currentChat.value.id, params);
   }
 
   async function sendMessage(content: string) {

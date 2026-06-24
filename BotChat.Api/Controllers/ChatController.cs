@@ -11,7 +11,7 @@ public class ChatController : ControllerBase
     private readonly IChatService _chatService;
     private readonly IMessageService _messageService;
     
-    public ChatController(IChatService chatService)
+    public ChatController(IChatService chatService, IMessageService messageService)
     {
         _chatService = chatService;
         _messageService = messageService;
@@ -35,6 +35,16 @@ public class ChatController : ControllerBase
         var chat = await _chatService.CreateChatAsync(userId, request);
         
         return Ok(chat);
+    }
+    
+    [HttpGet("{chatId}/messages")]
+    public async Task<ActionResult<MessageDto>> GetMessageHistory(Guid chatId, [FromQuery] GetMessageHistoryRequest request)
+    {
+        var amount = request.Amount ?? 20;
+        var lastMessageTime = request.Before ?? -1;
+        var messages = await _messageService.GetChatHistoryAsync(chatId, amount, lastMessageTime);
+        
+        return Ok(messages);
     }
     
     [HttpPost("{chatId}/messages")]

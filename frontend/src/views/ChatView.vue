@@ -111,4 +111,13 @@ watch(messages, async () => {
   background: #2a2a2a;
   align-self: flex-start;
 }
+
+input {
+  height: 48px;
+  background: #111;
+  color: #eee;
+  border: none;
+  padding: 16px;
+  border-radius: 24px;
+}
 </style>
