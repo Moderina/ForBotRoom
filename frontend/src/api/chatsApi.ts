@@ -6,11 +6,11 @@ export interface CreateChatRequest {
 }
 
 export function getChatsList(): Promise<Chat[]> {
-    return api<Chat[]>("/api/chat/getAll");
+    return api<Chat[]>("/api/chats/getAll");
 }
 
 export function createChat(request : CreateChatRequest): Promise<Chat> {
-    return api<Chat>("/api/chat/new", {
+    return api<Chat>("/api/chats/new", {
         method: "POST",
         body: JSON.stringify(request),
     });

@@ -1,9 +1,10 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type {Chat} from "@/types/Chat.ts";
-import {getChatsList, createChat} from "@/api/apiChats.ts";
+import {getChatsList, createChat} from "@/api/chatsApi.ts";
 import type {Message} from "@/types/Message.ts";
 import {useUserStore} from "@/stores/userStore.ts";
+import * as MessageApi from "@/api/MessageApi.ts";
 
 export const useChatStore = defineStore('chat', () => {
   const userStore = useUserStore();
@@ -26,29 +27,27 @@ export const useChatStore = defineStore('chat', () => {
     chats.value.push(newChat);
     return newChat;
   }
+  
+  async function openChat(chat: Chat) {
+    currentChat.value = chat;
+    messages.value = [];
+    
+  }
 
-  function sendMessage(content: string) {
-    if (!currentChat.value) return
-
-    if (userStore.user == null)
-      return;
-    const msg :Message = {
-      content: content,
-      class: "user",
-      authorId: userStore.user.id,
-      chatId: currentChat.value.id,
+  async function sendMessage(content: string) {
+    if (!currentChat.value) return;
+    if (userStore.user == null) return;
+    
+    const msgDto: MessageApi.SendMessageRequest = {
+      content: content
     }
-    const msgDto = {
-      content: content,
-      authorId: userStore.user.id,
-      chatId: currentChat.value.id
-    }
+    const msg = await MessageApi.createMessage(currentChat.value.id, msgDto);
     // sendWs(msgDto)
     addMessage(msg)
   }
 
   function addMessage(msg: Message) {
-    console.log("addMessage", msg)
+    console.log(msg)
     messages.value.push(msg)
   }
 
@@ -57,6 +56,7 @@ export const useChatStore = defineStore('chat', () => {
     currentChat,
     messages,
     loadChats,
+    openChat,
     addChat,
     sendMessage,
     

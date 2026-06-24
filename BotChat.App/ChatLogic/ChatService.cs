@@ -14,9 +14,9 @@ public class ChatService : IChatService
         _chatMemberRepository = chatMemberRepository;
     }
     
-    public List<ChatDto> GetChats()
+    public async Task<List<ChatDto>> GetChatsAsync()
     {
-        var chats = _chatRepository.GetChatsAsync().Result;
+        var chats = await _chatRepository.GetChatsAsync();
         var chatDtos = new List<ChatDto>();
         foreach (var chat in chats)
         {
@@ -29,12 +29,12 @@ public class ChatService : IChatService
         return chatDtos;
     }
 
-    public ChatDto CreateChat(Guid userId, CreateChatRequest request)
+    public async Task<ChatDto> CreateChatAsync(Guid userId, CreateChatRequest request)
     {
         var chat = new Chat(request.Name);
         var member = new ChatMember() { UserId = userId, ChatId = chat.Id };
-        _chatRepository.AddChatAsync(chat);
-        _chatMemberRepository.AddParticipantAsync(member);
+        await _chatRepository.AddChatAsync(chat);
+        await _chatMemberRepository.AddParticipantAsync(member);
         
         var chatdto = new ChatDto()
         {
@@ -44,7 +44,7 @@ public class ChatService : IChatService
         return chatdto;
     }
 
-    public Task DeleteChat(Guid chatId)
+    public Task DeleteChatAsync(Guid chatId)
     {
         return Task.CompletedTask;
     }

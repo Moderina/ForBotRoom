@@ -4,7 +4,7 @@ namespace BotChat.App.ChatLogic;
 
 public interface IMessageRepository
 {
-    public Task AddAsync(Message message);
+    public Task<Message> AddAsync(Message message);
 
     public Task<List<Message>> GetChatHistoryAsync(Guid chatId, int limit, DateTime lastMessageTime);
 

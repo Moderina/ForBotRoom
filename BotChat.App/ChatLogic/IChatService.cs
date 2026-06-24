@@ -4,12 +4,9 @@ namespace BotChat.App.ChatLogic;
 
 public interface IChatService
 {
-    List<ChatDto> GetChats();
+    Task<List<ChatDto>> GetChatsAsync();
 
-    ChatDto CreateChat(
-        Guid userId,
-        CreateChatRequest request);
+    Task<ChatDto> CreateChatAsync(Guid userId, CreateChatRequest request);
 
-    Task DeleteChat(
-        Guid chatId);
+    Task DeleteChatAsync(Guid chatId);
 }

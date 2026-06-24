@@ -5,20 +5,22 @@ using Microsoft.AspNetCore.Mvc;
 namespace BotChat.Api.Controllers;
 
 [ApiController]
-[Route("api/chat")]
+[Route("api/chats")]
 public class ChatController : ControllerBase
 {
     private readonly IChatService _chatService;
+    private readonly IMessageService _messageService;
     
     public ChatController(IChatService chatService)
     {
         _chatService = chatService;
+        _messageService = messageService;
     }
     
     [HttpGet("getAll")]
     public async Task<ActionResult<ChatDto>> GetAllChats()
     {
-        var chats = _chatService.GetChats();
+        var chats = await _chatService.GetChatsAsync();
         
         return Ok(chats);
     }
@@ -30,8 +32,23 @@ public class ChatController : ControllerBase
         var token = authHeader.Replace("Bearer ", "");
         var userId = Guid.Parse(token);
         
-        var chat = _chatService.CreateChat(userId, request);
+        var chat = await _chatService.CreateChatAsync(userId, request);
         
         return Ok(chat);
+    }
+    
+    [HttpPost("{chatId}/messages")]
+    public async Task<ActionResult<MessageDto>> CreateMessage(Guid chatId, CreateMessageRequest request)
+    {
+        var authHeader = Request.Headers.Authorization.ToString();
+        var token = authHeader.Replace("Bearer ", "");
+        var userId = Guid.Parse(token);
+        
+        var message = await _messageService.CreateMessageAsync(chatId, userId, request.Content);
+        
+        // await _hub.Clients
+        //     .Group(message.ChatId.ToString())
+        //     .SendAsync("ReceiveMessage", message);
+        return Ok(message);
     }
 }

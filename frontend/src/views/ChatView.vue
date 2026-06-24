@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {nextTick, ref, watch} from "vue"
+import {computed, nextTick, ref, watch} from "vue"
 import {useChatStore} from "@/stores/chatStore.ts";
 import {storeToRefs} from "pinia";
 import {useUserStore} from "@/stores/userStore.ts";
@@ -12,21 +12,23 @@ const messagesDiv = ref<HTMLDivElement | null>(null)
 const { messages } = storeToRefs(chatStore)
 const input = ref("")
 
-async function sendMessage() {
+async function onSendMessage() {
   if (!input.value.trim()) return
   console.log(input.value)
 
   const text = input.value
   input.value = ""
 
-  chatStore.sendMessage(text)
+  await chatStore.sendMessage(text)
 }
 
-//chat change
-watch(() => chatStore.currentChat, async (newchat, oldchat) => {
-  console.log("Zmieniono chat! Nowy id:", newchat);
+const chatTitle = computed(() => {
+  const chat = chatStore.currentChat;
 
-  chatName.value = newchat?.name ?? "";
+  if (!chat)
+    return "Select a chat";
+
+  return `Chatting with ${chat.name}`;
 });
 
 //message received
@@ -42,7 +44,8 @@ watch(messages, async () => {
 
 <template>
   <div class="chat-view">
-    <div class="chat-title">{{ chatName ? 'Chatting with ' + chatName : 'Select a chat' }}</div>
+<!--    <div class="chat-title">{{ chatName ? 'Chatting with ' + chatName : 'Select a chat' }}</div>-->
+    <div class="chat-title">{{ chatTitle }}</div>
 
     <div class="chat">
       <div class="messages" ref="messagesDiv">
@@ -55,7 +58,7 @@ watch(messages, async () => {
         </div>
       </div>
 
-      <input v-model="input" placeholder="Napisz wiadomość..." @keydown.enter="sendMessage" />
+      <input v-model="input" placeholder="Napisz wiadomość..." @keydown.enter="onSendMessage" />
     </div>
   </div>
 </template>

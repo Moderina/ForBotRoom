@@ -1,6 +1,8 @@
 export interface Message {
-    content: string
-    class: "user" | "bot"
-    authorId: string
+    id: string
     chatId: string
+    authorId: string
+    class: "user" | "bot"
+    content: string
+    sent : boolean
 }

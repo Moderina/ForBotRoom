@@ -6,7 +6,7 @@ import type {Chat} from "@/types/Chat.ts";
 const chatStore = useChatStore();
 
 async function selectChat(chat: Chat) {
-  chatStore.currentChat = chat
+  chatStore.openChat(chat);
 }
 
 async function createNewChat() {

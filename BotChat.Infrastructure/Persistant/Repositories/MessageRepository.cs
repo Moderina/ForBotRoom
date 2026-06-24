@@ -13,10 +13,11 @@ public class MessageRepository : IMessageRepository
         _db = db;
     }
     
-    public async Task AddAsync(Message message)
+    public async Task<Message> AddAsync(Message message)
     {
         _db.Messages.Add(message);
         await _db.SaveChangesAsync();
+        return message;
     }
 
     public Task<List<Message>> GetChatHistoryAsync(Guid chatId, int limit, DateTime lastMessageTime)
