@@ -1,4 +1,4 @@
-using BotChat.Domain.Agents;
+using BotChat.Domain.Bots;
 using BotChat.Domain.Users;
 
 namespace BotChat.Domain;

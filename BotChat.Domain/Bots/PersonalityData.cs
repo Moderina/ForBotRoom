@@ -1,4 +1,4 @@
-namespace BotChat.Domain.Agents;
+namespace BotChat.Domain.Bots;
 
 public class PersonalityData
 {

@@ -1,5 +1,5 @@
 using BotChat.Domain;
-using BotChat.Domain.Agents;
+using BotChat.Domain.Bots;
 using BotChat.Domain.Chats;
 using Microsoft.EntityFrameworkCore;
 

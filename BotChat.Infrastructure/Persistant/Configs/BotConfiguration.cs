@@ -1,6 +1,6 @@
 using System.Text.Json;
 using BotChat.Domain;
-using BotChat.Domain.Agents;
+using BotChat.Domain.Bots;
 using BotChat.Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

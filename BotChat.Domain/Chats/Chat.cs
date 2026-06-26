@@ -1,5 +1,3 @@
-using BotChat.Domain.Agents;
-
 namespace BotChat.Domain.Chats;
 
 public class Chat
