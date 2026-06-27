@@ -1,3 +1,4 @@
+using BotChat.App.BotLogic;
 using BotChat.App.ChatLogic;
 using BotChat.App.DI;
 using BotChat.App.Services;
@@ -28,8 +29,10 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<IChatMemberRepository, ChatMemberRepository>();
-builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IBotService, BotService>();
+builder.Services.AddScoped<IBotRepository, BotRepository>();
 
 builder.Services.AddSignalR();
 

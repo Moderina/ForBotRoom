@@ -2,6 +2,7 @@
 import HeaderBar from "@/components/HeaderBar.vue";
 import ChatListView from "@/views/ChatsListView.vue";
 import ChatView from "@/views/ChatView.vue";
+import BotManagerView from "@/views/BotManagerView.vue";
 </script>
 
 <template>
@@ -15,6 +16,9 @@ import ChatView from "@/views/ChatView.vue";
 
       <section class="chat">
         <ChatView />
+      </section>
+      <section class="botManager">
+        <BotManagerView />
       </section>
     </main>
   </div>
@@ -47,5 +51,9 @@ import ChatView from "@/views/ChatView.vue";
 
 .chat {
   flex: 1;
+}
+
+.botManager {
+  flex: 2;
 }
 </style>

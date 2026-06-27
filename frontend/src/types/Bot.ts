@@ -7,8 +7,28 @@ export interface IPersonality {
     dislikes: string
 }
 
-export interface IBot {
-    id: number | null
+export interface Bot {
+    id: string | null
+    name: string
+    personalityData: IPersonality | null
+}
+
+export interface BotForm {
     name: string
     personalityData: IPersonality
+}
+
+
+export function createEmptyBotForm(): BotForm {
+    return {
+        name: "",
+        personalityData: {
+            coreIdentity: "",
+            personality: "",
+            textingStyle: "",
+            interests: "",
+            likes: "",
+            dislikes: "",
+        }
+    };
 }

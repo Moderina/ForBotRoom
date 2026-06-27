@@ -17,4 +17,11 @@ public class UserRepository : IUserRepository
     {
         return _db.Users.FirstOrDefaultAsync();
     }
+
+    public async Task<User> CreateUserAsync(User user)
+    {
+        var newuser = _db.Users.Add(user);
+        await _db.SaveChangesAsync();
+        return newuser.Entity;
+    }
 }

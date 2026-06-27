@@ -1,0 +1,37 @@
+import {defineStore} from "pinia";
+import {ref} from "vue";
+import type {Bot, BotForm} from "@/types/Bot.ts";
+import {createBot, getAllBots, getBotDetails} from "@/api/BotApi.ts";
+import {createChat} from "@/api/chatsApi.ts";
+
+export const useBotStore = defineStore('bot', () => {
+    const botStore = useBotStore();
+    
+    const bots = ref<Bot[]>([]);
+    const selectedBot = ref<Bot | null>(null);
+
+    async function loadBots() {
+        bots.value = await getAllBots();
+    }
+
+    async function loadBotDetails(bot : Bot) {
+        selectedBot.value = bot;
+        if (selectedBot.value.id === null) return;
+        selectedBot.value = await getBotDetails(selectedBot.value.id);
+    }
+
+    async function addBot(data: BotForm) {
+        const newBot = await createBot(data);
+
+        bots.value.push(newBot);
+        selectedBot.value = newBot;
+    }
+
+    return {
+        bots,
+        selectedBot,
+        addBot,
+        loadBots,
+        loadBotDetails,
+    };
+})
