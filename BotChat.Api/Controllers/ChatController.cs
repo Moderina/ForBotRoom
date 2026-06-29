@@ -17,10 +17,10 @@ public class ChatController : ControllerBase
         _messageService = messageService;
     }
     
-    [HttpGet("getAll")]
-    public async Task<ActionResult<ChatDto>> GetAllChats()
+    [HttpGet]
+    public async Task<ActionResult<ChatDto>> GetChats([FromQuery] bool active = true)
     {
-        var chats = await _chatService.GetChatsAsync();
+        var chats = await _chatService.GetActiveChatsAsync();
         
         return Ok(chats);
     }
@@ -35,6 +35,14 @@ public class ChatController : ControllerBase
         var chat = await _chatService.CreateChatAsync(userId, request);
         
         return Ok(chat);
+    }
+    
+    [HttpPost("{chatid}/disable")]
+    public async Task<ActionResult<ChatDto>> DisableChat(Guid chatId)
+    {
+        await _chatService.DisableChatAsync(chatId);
+        
+        return NoContent();
     }
     
     [HttpGet("{chatId}/messages")]

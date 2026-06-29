@@ -7,12 +7,22 @@ export interface CreateChatRequest {
 }
 
 export function getChatsList(): Promise<Chat[]> {
-    return api<Chat[]>("/api/chats/getAll");
+    return api<Chat[]>("/api/chats/");
+}
+
+export function getDisabledChats(): Promise<Chat[]> {
+    return api<Chat[]>("/api/chats?active=false");
 }
 
 export function createChat(request : CreateChatRequest): Promise<Chat> {
     return api<Chat>("/api/chats/new", {
         method: "POST",
         body: JSON.stringify(request),
+    });
+}
+
+export function disableChat(chatid: string) {
+    api(`/api/chats/${chatid}/disable`, {
+        method: "POST",
     });
 }

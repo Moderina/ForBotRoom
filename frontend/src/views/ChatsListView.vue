@@ -19,6 +19,9 @@ async function createNewChat(name: string, botId: string) {
   showCreateModal.value = false;
 }
 
+async function removeChat(chat: Chat) {
+  chatStore.removeChat(chat);
+}
 
 onMounted(() => {
   chatStore.loadChats();
@@ -29,8 +32,16 @@ onMounted(() => {
 <template>
   <div class="list-name">Contact List</div>
   <ul class="chats-list">
-    <li v-for="chat in chatStore.chats" :key="chat.id" @click="selectChat(chat)">
+    <li v-for="chat in chatStore.chats" :key="chat.id" @click="selectChat(chat)"
+        class="group flex items-center justify-between px-3 py-2 hover:bg-gray-100 cursor-pointer"
+    >
       <div>{{ chat.name }}</div>
+      <button
+          @click.stop="removeChat(chat)"
+          class="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+      >
+        🗑️
+      </button>
     </li>
     <button @click="showCreateModal = true">Add Chat</button>
   </ul>
