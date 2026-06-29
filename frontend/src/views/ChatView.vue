@@ -71,7 +71,6 @@ watch(messages, async () => {
 }
 
 .chat {
-  width: 400px;
   background: #1e1e1e;
   border-radius: 8px;
   padding: 10px;

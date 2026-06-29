@@ -31,8 +31,6 @@ import BotManagerView from "@/views/BotManagerView.vue";
     justify-content: center;
     background: #111;
     color: #eee;
-  height: 100vh;
-  display: flex;
   flex-direction: column;
 }
 

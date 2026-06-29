@@ -19,19 +19,6 @@ async function saveBot() {
   const method = isEditing.value ? "PUT" : "POST"
   
   await botStore.addBot(form.value)
-  // const url = SERVER_URL + "/admin/agents"
-
-  // console.log(form.value)
-  // const res = await fetch(url, {
-  //   method,
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify(form.value)
-  // })
-  //
-  // const added = await res.json()
-  // if (!isEditing.value)
-  //   agentStore.value.push(added)
-  // selectedAgentId.value = added.id
 }
 
 async function deleteBot() {
@@ -43,7 +30,6 @@ async function deleteBot() {
 }
 
 function newAgent() {
-  // agentStore.selectAgent(null)
   botStore.selectedBot = null;
   form.value = createEmptyBotForm();
 }

@@ -19,12 +19,14 @@ export const useChatStore = defineStore('chat', () => {
     chats.value = response;
   }
 
-  async function addChat(name: string) {
+  async function addChat(name: string, botId: string) {
     const newChat = await createChat({
       name: name,
+      botId
     });
 
     chats.value.push(newChat);
+    currentChat.value = newChat;
     return newChat;
   }
   

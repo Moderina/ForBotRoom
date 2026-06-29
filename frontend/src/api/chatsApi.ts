@@ -3,6 +3,7 @@ import type {Chat} from "@/types/Chat.ts";
 
 export interface CreateChatRequest {
     name: string;
+    botId: string;
 }
 
 export function getChatsList(): Promise<Chat[]> {

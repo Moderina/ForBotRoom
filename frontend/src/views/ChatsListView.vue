@@ -2,16 +2,21 @@
 import { ref, onMounted } from "vue"
 import { useChatStore } from "@/stores/chatStore";
 import type {Chat} from "@/types/Chat.ts";
+import {useBotStore} from "@/stores/botStore.ts";
+import CreateChatModal from "@/components/CreateChatModal.vue";
 
+const showCreateModal = ref(false);
 const chatStore = useChatStore();
+const botStore = useBotStore();
 
 async function selectChat(chat: Chat) {
   chatStore.openChat(chat);
 }
 
-async function createNewChat() {
-  let newChat = await chatStore.addChat("chat name");
-  // chatStore.currentChat = chat
+async function createNewChat(name: string, botId: string) {
+  console.log("new chat name:", name);
+  let newChat = await chatStore.addChat(name, botId);
+  showCreateModal.value = false;
 }
 
 
@@ -27,8 +32,15 @@ onMounted(() => {
     <li v-for="chat in chatStore.chats" :key="chat.id" @click="selectChat(chat)">
       <div>{{ chat.name }}</div>
     </li>
-    <button @click="createNewChat()">Add Chat</button>
+    <button @click="showCreateModal = true">Add Chat</button>
   </ul>
+
+  <CreateChatModal
+      v-if="showCreateModal"
+      :bots="botStore.bots"
+      @close="showCreateModal = false"
+      @create="createNewChat"
+  />
 </template>
 
 <style scoped>

@@ -8,7 +8,7 @@ export interface IPersonality {
 }
 
 export interface Bot {
-    id: string | null
+    id: string
     name: string
     personalityData: IPersonality | null
 }
