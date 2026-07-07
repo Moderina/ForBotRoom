@@ -31,6 +31,11 @@ public class BotService : IBotService
         return dtos;
     }
 
+    public Task<Bot?> GetBotByIdAsync(Guid id)
+    {
+        return _botRepository.GetBotByIdAsync(id);
+    }
+
     public async Task<BotDetailsDto> GetBotDetailsAsync(Guid id)
     {
         var bot = await _botRepository.GetBotByIdAsync(id);

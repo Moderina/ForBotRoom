@@ -1,6 +1,8 @@
 using BotChat.App.BotLogic;
 using BotChat.App.ChatLogic;
+using BotChat.App.ConversationLogic;
 using BotChat.App.DI;
+using BotChat.App.LlmLogic;
 using BotChat.App.Services;
 using BotChat.App.UserLogic;
 using BotChat.Infrastructure.DI;
@@ -19,6 +21,11 @@ builder.Services.AddCors(options => {
 });
 
 builder.Services.AddOpenApi();
+builder.Services.AddHttpClient<ILlmService, LlamaCppService>(client =>
+{
+    client.BaseAddress =
+        new Uri("http://localhost:11435");
+});
 
 builder.Services.AddApplication();
 builder.Services.AddControllers();
@@ -33,8 +40,9 @@ builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IBotService, BotService>();
 builder.Services.AddScoped<IBotRepository, BotRepository>();
+builder.Services.AddScoped<IConversationService, ConversationService>();
 
-builder.Services.AddSignalR();
+// builder.Services.AddSignalR();
 
 var app = builder.Build();
 

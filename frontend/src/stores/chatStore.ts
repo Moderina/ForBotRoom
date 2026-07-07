@@ -51,6 +51,16 @@ export const useChatStore = defineStore('chat', () => {
     if (!currentChat.value) return;
     if (userStore.user == null) return;
     
+    //TODO: temporary till signalR not implemeneted
+    const msgSent: Message = {
+      id: "temp",
+      chatId: currentChat.value.id,
+      content: content,
+      authorId: userStore.user.id,
+      class: "user",
+      sent: false
+    }
+    addMessage(msgSent)
     const msgDto: MessageApi.SendMessageRequest = {
       content: content
     }

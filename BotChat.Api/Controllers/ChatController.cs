@@ -10,11 +10,14 @@ public class ChatController : ControllerBase
 {
     private readonly IChatService _chatService;
     private readonly IMessageService _messageService;
+    private readonly IConversationService _conversationService;
+    private readonly IHubContext<ChatHub> _hub;
     
-    public ChatController(IChatService chatService, IMessageService messageService)
+    public ChatController(IChatService chatService, IMessageService messageService, IConversationService conversationService)
     {
         _chatService = chatService;
         _messageService = messageService;
+        _conversationService = conversationService;
     }
     
     [HttpGet]
@@ -62,11 +65,11 @@ public class ChatController : ControllerBase
         var token = authHeader.Replace("Bearer ", "");
         var userId = Guid.Parse(token);
         
-        var message = await _messageService.CreateMessageAsync(chatId, userId, request.Content);
+        var response = await _conversationService.HandleUserMessageAsync(chatId, userId, request.Content);
         
         // await _hub.Clients
         //     .Group(message.ChatId.ToString())
         //     .SendAsync("ReceiveMessage", message);
-        return Ok(message);
+        return Ok(response);
     }
 }

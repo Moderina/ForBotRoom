@@ -1,5 +1,6 @@
 using BotChat.App.ChatLogic;
 using BotChat.Domain.Chats;
+using BotChat.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace BotChat.Infrastructure.Persistant.Repositories;
@@ -12,9 +13,12 @@ public class ChatMemberRepository : IChatMemberRepository
     {
         _db = db;
     }
-    public Task<List<ChatMember>> GetParticipantsAsync(Guid chatId)
+    public Task<List<ChatMember>> GetBotParticipantsAsync(Guid chatId)
     {
-        return _db.ChatMembers.Where(c => c.ChatId == chatId).ToListAsync();
+        return _db.ChatMembers
+            .Include(c => c.User)
+            .Where(c => c.ChatId == chatId && c.User.Type == UserType.Bot)
+            .ToListAsync();
     }
 
     public Task AddParticipantAsync(ChatMember member)
