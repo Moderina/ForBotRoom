@@ -1,3 +1,5 @@
+using BotChat.Api.Controllers;
+using BotChat.Api.Hubs;
 using BotChat.App.BotLogic;
 using BotChat.App.ChatLogic;
 using BotChat.App.ConversationLogic;
@@ -16,7 +18,8 @@ builder.Services.AddCors(options => {
     {
         policy.WithOrigins(["http://localhost:5174", "http://192.168.100.3:5174"]) 
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -41,8 +44,11 @@ builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IBotService, BotService>();
 builder.Services.AddScoped<IBotRepository, BotRepository>();
 builder.Services.AddScoped<IConversationService, ConversationService>();
+builder.Services.AddScoped<IChatNotifier, WebSocketChatNotifier>();
+builder.Services.AddSingleton<IConversationQueue, ConversationQueue>();
 
-// builder.Services.AddSignalR();
+builder.Services.AddSignalR();
+builder.Services.AddHostedService<ConversationWorker>();
 
 var app = builder.Build();
 
@@ -61,5 +67,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

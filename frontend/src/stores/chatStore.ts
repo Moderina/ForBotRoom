@@ -5,6 +5,7 @@ import {createChat, disableChat, getChatsList} from "@/api/chatsApi.ts";
 import type {Message} from "@/types/Message.ts";
 import {useUserStore} from "@/stores/userStore.ts";
 import * as MessageApi from "@/api/MessageApi.ts";
+import {onReceiveMessage} from "@/services/WebSocketService.ts";
 
 export const useChatStore = defineStore('chat', () => {
   const userStore = useUserStore();
@@ -12,6 +13,12 @@ export const useChatStore = defineStore('chat', () => {
   const chats = ref<Chat[]>([]);
   const currentChat = ref<Chat | null>(null)
   const messages = ref<Message[]>([])
+
+  function initSignalR() {
+    onReceiveMessage((message) => {
+      addMessage(message);
+    });
+  }
 
   async function loadChats() {
     const response = await getChatsList();
@@ -51,21 +58,10 @@ export const useChatStore = defineStore('chat', () => {
     if (!currentChat.value) return;
     if (userStore.user == null) return;
     
-    //TODO: temporary till signalR not implemeneted
-    const msgSent: Message = {
-      id: "temp",
-      chatId: currentChat.value.id,
-      content: content,
-      authorId: userStore.user.id,
-      class: "user",
-      sent: false
-    }
-    addMessage(msgSent)
     const msgDto: MessageApi.SendMessageRequest = {
       content: content
     }
     const msg = await MessageApi.createMessage(currentChat.value.id, msgDto);
-    // sendWs(msgDto)
     addMessage(msg)
   }
 
@@ -78,6 +74,7 @@ export const useChatStore = defineStore('chat', () => {
     chats,
     currentChat,
     messages,
+    initSignalR,
     loadChats,
     openChat,
     addChat,

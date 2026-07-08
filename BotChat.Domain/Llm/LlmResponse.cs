@@ -25,8 +25,8 @@ public class LlmChoice
 
 public class LlmMessage
 {
-    [JsonPropertyName("role")]
-    public string Role { get; set; }
+    // [JsonPropertyName("role")]
+    // public string Role { get; set; }
     [JsonPropertyName("content")]
     public string Content { get; set; }
 }
