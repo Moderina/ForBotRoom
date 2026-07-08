@@ -20,6 +20,14 @@ public class ChatMemberRepository : IChatMemberRepository
             .Where(c => c.ChatId == chatId && c.User.Type == UserType.Bot)
             .ToListAsync();
     }
+    
+    public Task<List<ChatMember>> GetHumanParticipantsAsync(Guid chatId)
+    {
+        return _db.ChatMembers
+            .Include(c => c.User)
+            .Where(c => c.ChatId == chatId && c.User.Type == UserType.Human)
+            .ToListAsync();
+    }
 
     public Task AddParticipantAsync(ChatMember member)
     {

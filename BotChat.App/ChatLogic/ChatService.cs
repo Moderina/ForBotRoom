@@ -1,4 +1,5 @@
 using BotChat.Contracts.Chat;
+using BotChat.Domain;
 using BotChat.Domain.Chats;
 
 namespace BotChat.App.ChatLogic;
@@ -27,6 +28,17 @@ public class ChatService : IChatService
             });
         }
         return chatDtos;
+    }
+
+    public async Task<List<User>> GetHumanMembersOfChatAsync(Guid chatId)
+    {
+        var members = await _chatMemberRepository.GetHumanParticipantsAsync(chatId);
+        var users = new List<User>();
+        foreach (var mem in members)
+        {
+            users.Add(mem.User);
+        }
+        return users;
     }
 
     public async Task<ChatDto> CreateChatAsync(Guid userId, CreateChatRequest request)
