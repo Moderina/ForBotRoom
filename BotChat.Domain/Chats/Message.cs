@@ -5,6 +5,7 @@ public class Message
     public Guid Id { get; private set; }
     public Guid ChatId { get; private set; }
     public Guid AuthorId { get; private set; }
+    public User Author { get; private set; } = null;
     public string Content { get; private set; }
     public DateTime Timestamp { get; private set; }
     

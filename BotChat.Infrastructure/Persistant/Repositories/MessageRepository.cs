@@ -23,6 +23,7 @@ public class MessageRepository : IMessageRepository
     public Task<List<Message>> GetChatHistoryAsync(Guid chatId, int limit, DateTime lastMessageTime)
     {
         return _db.Messages
+            .Include(m => m.Author)
             .Where(m => m.ChatId == chatId && m.Timestamp <= lastMessageTime)
             .OrderByDescending(m => m.Timestamp)
             .Take(limit)

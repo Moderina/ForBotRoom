@@ -42,9 +42,8 @@ public class ConversationService : IConversationService
         if (bot == null) return;
         var response = await _llmService.GenerateAsync(PromptBuilder.BuildPrompt_Respond(bot, history));
         if (response == null) return;
-        Console.WriteLine(response.Response);
-        var messageDto = await _messageService.CreateMessageAsync(job.ChatId, bot.UserId, response.Response);
+        Console.WriteLine(response);
+        var messageDto = await _messageService.CreateMessageAsync(job.ChatId, bot.UserId, response);
         await _chatNotifier.SendMessageAsync(messageDto);
     }
-
 }

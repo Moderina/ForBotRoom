@@ -5,7 +5,7 @@ namespace BotChat.App.LlmLogic;
 
 public static class LlmParser
 {
-    public static LlmResponse ParseResponse(string rawJson)
+    public static string ParseResponse(string rawJson)
     {
         string? contentString = null;
         try 
@@ -20,12 +20,14 @@ public static class LlmParser
             if (string.IsNullOrWhiteSpace(contentString))
                 throw new InvalidOperationException("AI returned empty content");
 
+            return contentString;
+
             var payload = JsonSerializer.Deserialize<LlmResponse>(contentString);
 
             if (payload == null)
                 throw new InvalidOperationException("Failed to parse AI payload");
 
-            return new LlmResponse(payload.Response, payload.SelfMemory);
+            // return new LlmResponse(payload.Response, payload.SelfMemory);
         }
         catch (JsonException ex)
         {

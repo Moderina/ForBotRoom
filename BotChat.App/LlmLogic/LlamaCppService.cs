@@ -1,6 +1,5 @@
 using System.Net.Http.Json;
 using System.Text.Json;
-using BotChat.Domain;
 using BotChat.Domain.Llm;
 
 namespace BotChat.App.LlmLogic;
@@ -14,20 +13,16 @@ public class LlamaCppService : ILlmService
         _http = http;
     }
 
-    public async Task<LlmResponse?> GenerateAsync(PromptContent prompt)
+    public async Task<string> GenerateAsync(List<LlmMessageTo> llmMessages)
     {
         try
         {
             var request = new
             {
                 model = "stheno",
-                messages = new[]
-                {
-                    new { role = "system", content = prompt.SystemPrompt},
-                    new { role = "user", content = prompt.UserPrompt }
-                },
+                messages = llmMessages,
                 temperature = 0.7,
-                max_tokens = 500
+                max_tokens = 500,
             };
 
             var response = await _http.PostAsJsonAsync(

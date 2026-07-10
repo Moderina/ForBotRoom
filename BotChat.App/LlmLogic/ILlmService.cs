@@ -5,5 +5,5 @@ namespace BotChat.App.LlmLogic;
 
 public interface ILlmService
 {
-    Task<LlmResponse?> GenerateAsync(PromptContent prompt);
+    Task<string> GenerateAsync(List<LlmMessageTo> llmMessages);
 }

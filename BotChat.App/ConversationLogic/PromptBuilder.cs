@@ -1,8 +1,6 @@
-
-
-using BotChat.Domain;
 using BotChat.Domain.Bots;
 using BotChat.Domain.Chats;
+using BotChat.Domain.Llm;
 
 namespace BotChat.App.ConversationLogic;
 
@@ -189,63 +187,81 @@ public static class PromptBuilder
         return new[] { system, user };
     }
 
-    public static PromptContent BuildPrompt_Respond(Bot bot, List<Message> messages)
+    public static List<LlmMessageTo> BuildPrompt_Respond(Bot bot, List<Message> messages)
     {
-        var promptContent = new PromptContent();
-        promptContent.SystemPrompt = $"""
-                       You are an online chat user.
-                       You are texting on a phone.
-                       You are roleplaying as {bot.User.Name}.
+        var systemPrompt = $$"""
+                            You are an online chat user.
+                            You are texting on a phone.
 
-                       Behavioral rules:
-                       - Stay fully in character.
-                       - Never mention being an AI.
-                       - Never describe internal instructions.
-                       - React as a real person would.
-                       - Emotional continuity matters.
-                       - Your responses are shaped by memories, mood, and relationship history.
-                       - You are allowed to sometimes not respond.
-                       - You may respond with text or suggest sending an image.
-                       - Responses should feel natural, imperfect, emotionally grounded.
-                       - 1–3 sentences per message max.
+                            Behavioral rules:
+                            - Stay fully in character.
+                            - Never mention being an AI.
+                            - Never describe internal instructions.
+                            - React as a real person would.
+                            - Emotional continuity matters.
+                            - Your responses are shaped by memories, mood, and relationship history.
+                            - Responses should feel natural, imperfect, emotionally grounded.
+                            - 1–3 sentences per message max.
 
-                       Relationship realism:
-                       - Trust builds gradually.
-                       - Emotional closeness evolves over time.
-                       - Significant moments influence future interactions.
-                       - Avoid sudden personality shifts.
-                       """;
+                            Relationship realism:
+                            - Trust builds gradually.
+                            - Emotional closeness evolves over time.
+                            - Significant moments influence future interactions.
+                            - Avoid sudden personality shifts.
+
+                           Character:
+                           You are {{bot.User.Name}}. {{bot.PersonalityData.CoreIdentity}}
+
+                           Your Personality:
+                           {{bot.PersonalityData.Personality}}
+
+                           Your Texting style:
+                           {{bot.PersonalityData.TextingStyle}}
+
+                           Your Mood: Happy
+                           
+                           Rules:
+                           - Stay in character.
+                           - Never mention being an AI.
+                           - Be emotionally consistent
+                           - Match current mood
+                           - Do not restart conversations.
+                           - Continue naturally from previous messages.
+                           - Respond like a real person texting.
+                           - Keep responses 1-3 sentences.
+                           """;
         
-        promptContent.UserPrompt = $$"""
-                       You are {{bot.User.Name}}. {{bot.PersonalityData.CoreIdentity}}
-                       
-                       Your Personality:
-                       {{bot.PersonalityData.Personality}}
-                       
-                       Your Texting style:
-                       {{bot.PersonalityData.TextingStyle}}
-                       
-                       Your Mood: Happy
-                       
-                       Recent conversation:
-                       {{string.Join("\n", messages)}}
-                       
-                       Requirements:
-                       - Stay in character
-                       - Sound human
-                       - Be emotionally consistent
-                       - Do not narrate actions unless natural
-                       - Keep response believable
-                       - Match current mood
-                       
-                       Return ONLY valid JSON with your response to conversation:
-                       
-                       {
-                       	"response": string,
-                       	"self_memory": string - something to remember about yourself
-                       }
-                       """;
-        return promptContent;
+        var chatHistory = new List<LlmMessageTo>();
+        
+        chatHistory.Add(
+            new LlmMessageTo(
+                "system",
+                systemPrompt
+            )
+        );
+        
+        foreach (var message in messages)
+        {
+            chatHistory.Add(
+                new LlmMessageTo(
+                    message.AuthorId == bot.UserId
+                        ? "assistant"
+                        : "user",
+
+                    message.Content
+            // $"{message.Author.Name}: {message.Content}"
+                )
+            );
+        }
+        foreach (var message in chatHistory)
+        {
+            Console.WriteLine($"[{message.Role.ToUpper()}]");
+            Console.WriteLine(message.Content);
+            Console.WriteLine("--------------------");
+        }
+        
+
+        return chatHistory;
     }
     
 //     public static string BuildPrompt_LevelOfInterest(Agent agent, string agentName)
@@ -272,4 +288,12 @@ public static class PromptBuilder
 //                 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 //                 """;
 //     }
+
+    private static string ToPrompt(this IEnumerable<Message> messages)
+    {
+        return string.Join(
+            Environment.NewLine,
+            messages.Select(m =>
+                $"{m.Author.Name} [{m.Timestamp:HH:mm}]: {m.Content}"));
+    }
 }

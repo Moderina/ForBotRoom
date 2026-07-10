@@ -7,8 +7,6 @@ public class Bot
     public PersonalityData PersonalityData { get; set; }
     public Mood Mood { get; }
     public bool IsActive { get; set; } = true;
-
-    // public AgentMemory Memory { get; set; }
     
     public Bot() {}
 
