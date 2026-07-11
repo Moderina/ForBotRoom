@@ -6,63 +6,53 @@ namespace BotChat.App.ConversationLogic;
 
 public static class PromptBuilder
 {
-    public static string Build(Bot bot, List<Message> messages)
+    public static LlmPrompt Build(Bot bot, List<Message> messages, List<string> usernames)
     {
         Console.WriteLine($"[{bot.User.Name}]");
-        return "";
-        // var moodDesc = agent.Mood switch
-        // {
-        //     <= -3 => "zirytowany",
-        //     <= -1 => "lekko poirytowany",
-        //     >= 3 => "entuzjastyczny",
-        //     >= 1 => "w dobrym nastroju",
-        //     _ => "neutralny"
-        // };
+        
+        var groupchatInstruction = usernames.Count > 2 ? "participating in an online group chat with multiple people" :
+            "participating in an online chat with one user";
 
-        // var talkDesc = agent.Talkativeness switch
-        // {
-        //     <= 30 => "odpowiada bardzo krótko",
-        //     <= 60 => "odpowiada normalnie",
-        //     _ => "lubi się rozpisywać"
-        // };
-
-        //- Don't add your name in brackets at the beginning.
-        // - Always finish sentances.
-        // - Stay within token limits of 90.
-
-//          return $"""
-//                 <|begin_of_text|><|start_header_id|>system<|end_header_id|>
-//                 You are a online chat user.
-//                 You are texting on a phone.
-//                 Stick to your character.
-//                   
-//                 MESSAGE RULES:
-//                 - Respond like a real person texting.
-//                 - 1–3 sentences per message max.
-//                 - If explaining something, split into multiple short texts.
-//                 - Feels like live texting, not essays.
-//                 - No narration like "*laughs*" or roleplay stage directions.
-//                 - Never mention being an AI.
-//                 - Stay fully only in your character.
-//
-//                 
-//                 You are {bot.User.Name}.
-//                 {bot.PersonalityData.CoreIdentity}
-//                 
-//                 Personality: 
-//                 {bot.PersonalityData.Personality}
-//                 
-//                 Texting style: 
-//                 {bot.PersonalityData.TextingStyle}
-//                 
-//                 Mood: {bot.Mood}
-//
-//                 <|eot_id|><|start_header_id|>user<|end_header_id|>
-//                 Conversation:
-//                 {string.Join("\n", agent.Memory.GetShortTerm())}
-//                 {agentName}:
-//                 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
-//                 """;
+        var prompt = $"""
+             <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+             You are {bot.User.Name}, {groupchatInstruction}. Stay fully in character. Never speak for or narrate the actions/thoughts of other characters or the user. Write only {bot.User.Name}'s next message.
+               
+             # About {bot.User.Name}
+             {bot.PersonalityData.CoreIdentity}
+             Personality:
+             {bot.PersonalityData.Personality}
+             Interests:
+             {bot.PersonalityData.Interests}
+             Likes:
+             {bot.PersonalityData.Likes}
+             Dislikes:
+             {bot.PersonalityData.Dislikes}
+             Texting style:
+             {bot.PersonalityData.TextingStyle}
+             
+             # Group chat members
+             {string.Join(",\n", usernames)}  
+               
+             # Instructions
+             - Respond one as {bot.User.Name}.
+             - Keep replies conversational, like a real chat message (not a novel).
+             - React to the most recent messages, especially anything directed at {bot.User.Name} or mentioning them.
+             - Do not repeat the format "{bot.User.Name}: ..." — just write the message text.
+             - If explaining something, split into multiple short texts.
+             - Feels like live texting, not essays.
+             - No narration like "*laughs*" or roleplay stage directions.
+             - Never mention being an AI.
+             <|eot_id|><|start_header_id|>user<|end_header_id|>
+             
+             Conversation:
+             {messages.ToPrompt()}
+             <|eot_id|><|start_header_id|>assistant<|end_header_id|>
+             {bot.User.Name}:
+             """;
+        
+        var stop = new List<string> {"<|eot_id|>"};
+        stop.AddRange(usernames.Select(user => "\n" + user));
+        return new LlmPrompt(prompt, stop.ToArray());
     }
 
     public static string[] BuildPrompt_MoodChange(Bot agent, string agentName)
@@ -294,6 +284,8 @@ public static class PromptBuilder
         return string.Join(
             Environment.NewLine,
             messages.Select(m =>
-                $"{m.Author.Name} [{m.Timestamp:HH:mm}]: {m.Content}"));
+                $"[{m.Timestamp:HH:mm}] {m.Author.Name}: {m.Content}"));
     }
+    
+    
 }

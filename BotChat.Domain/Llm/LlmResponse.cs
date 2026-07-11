@@ -36,3 +36,10 @@ public class LlmRawResponse
     [JsonPropertyName("choices")]
     public LlmChoice[] Choices { get; set; }
 }
+
+public class LlmCompletionResponse
+{
+    public string Content { get; set; } = "";
+    public bool Stop { get; set; }
+    public string? StoppingWord { get; set; }
+}

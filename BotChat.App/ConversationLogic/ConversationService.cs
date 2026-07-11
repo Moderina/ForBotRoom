@@ -31,6 +31,7 @@ public class ConversationService : IConversationService
         //add message to bot memory
         var members = await _chatMemberRepository.GetBotParticipantsAsync(job.ChatId);
         Console.WriteLine($"Found {members.Count} participants");
+        var membersNames = members.Select(m => m.User.Name).ToList();
         var responder = members[0];
         Console.WriteLine(responder.UserId);
         var bot = await _botService.GetBotByIdAsync(responder.UserId);
@@ -40,7 +41,8 @@ public class ConversationService : IConversationService
         //TODO: nothification for null bot
         Console.WriteLine(bot);
         if (bot == null) return;
-        var response = await _llmService.GenerateAsync(PromptBuilder.BuildPrompt_Respond(bot, history));
+        // var response = await _llmService.GenerateAsync(PromptBuilder.BuildPrompt_Respond(bot, history));
+        var response = await _llmService.GenerateAsyncTEST(PromptBuilder.Build(bot, history, membersNames));
         if (response == null) return;
         Console.WriteLine(response);
         var messageDto = await _messageService.CreateMessageAsync(job.ChatId, bot.UserId, response);
