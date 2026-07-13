@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/userStore";
+import {getFileUrl} from "@/utils/fileUrl.ts";
 
 const userStore = useUserStore();
 </script>
@@ -11,9 +12,16 @@ const userStore = useUserStore();
     </div>
 
     <div class="right">
-      <span class="username" v-if="userStore.isLoaded">
-        {{ userStore.user?.name }}
-      </span>
+      <div v-if="userStore.isLoaded" class="flex justify-center items-center">
+        <span class="username pr-4">
+          {{ userStore.user?.name }}
+        </span>
+        <img
+            :src="getFileUrl(userStore.user?.profilePictureUrl)"
+            alt="Profile"
+            class="w-20 h-20 rounded-full object-cover bg-amber-50"
+        />
+      </div>
       <span class="username" v-else>
         Loading...
       </span>
@@ -43,5 +51,6 @@ const userStore = useUserStore();
 .username {
   font-size: 0.9rem;
   color: #666;
+  align-content: center;
 }
 </style>

@@ -27,4 +27,12 @@
       <ProjectReference Include="..\BotChat.Infrastructure\BotChat.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="wwwroot\uploads\profile-pics\kot.jpg" />
+    </ItemGroup>
+
 </Project>

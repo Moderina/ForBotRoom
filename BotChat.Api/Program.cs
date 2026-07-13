@@ -56,17 +56,16 @@ using var scope = app.Services.CreateScope();
 var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 await DbInit.InitializeAsync(db);
 
-
-app.MapControllers();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseCors("AllowVueDev");
 }
-
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.MapControllers();
+
 app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

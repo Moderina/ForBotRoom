@@ -22,6 +22,7 @@ public class UserService : IUserService
             Id = user.Id,
             Name = user.Name,
             Status = (int)user.Active,
+            ProfilePictureUrl = user.ProfilePictureUrl,
         };
     }
 }
