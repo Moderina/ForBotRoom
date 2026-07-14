@@ -1,6 +1,7 @@
 using BotChat.Contracts.Chat;
 using BotChat.Domain;
 using BotChat.Domain.Chats;
+using BotChat.Domain.Users;
 
 namespace BotChat.App.ChatLogic;
 
@@ -8,20 +9,22 @@ public class ChatService : IChatService
 {
     private IChatRepository _chatRepository;
     private IChatMemberRepository _chatMemberRepository;
+    private IMessageRepository _messageRepository;
 
-    public ChatService(IChatRepository chatRepository, IChatMemberRepository chatMemberRepository)
+    public ChatService(IChatRepository chatRepository, IChatMemberRepository chatMemberRepository, IMessageRepository messageRepository)
     {
         _chatRepository = chatRepository;
         _chatMemberRepository = chatMemberRepository;
+        _messageRepository = messageRepository;
     }
     
-    public async Task<List<ChatDto>> GetActiveChatsAsync()
+    public async Task<List<ChatListItemDto>> GetActiveChatsAsync()
     {
         var chats = await _chatRepository.GetActiveChatsAsync();
-        var chatDtos = new List<ChatDto>();
+        var chatDtos = new List<ChatListItemDto>();
         foreach (var chat in chats)
         {
-            chatDtos.Add(new ChatDto()
+            chatDtos.Add(new ChatListItemDto()
             {
                 Id = chat.Id,
                 Name = chat.Name,
@@ -41,7 +44,50 @@ public class ChatService : IChatService
         return users;
     }
 
-    public async Task<ChatDto> CreateChatAsync(Guid userId, CreateChatRequest request)
+    public async Task<ChatDetailsDto> GetChatDetailsAsync(Guid chatId)
+    {
+        var chat = await _chatRepository.GetChatAsync(chatId);
+        var members = await _chatMemberRepository.GetAllParticipantsAsync(chatId);
+        var messages = await _messageRepository.GetChatHistoryAsync(chatId, 20, DateTime.Now);
+        
+        var memberDtos = new List<ChatMemberDto>();
+        foreach (var member in members)
+        {
+            var user = member.User;
+            memberDtos.Add(new ChatMemberDto()
+            {
+                UserId = user.Id,
+                Name = user.Name,
+                ProfilePictureUrl = user.ProfilePictureUrl,
+                Type = user.Type == UserType.Bot ? "bot" : "user",
+            });
+        }
+        
+        var messageDtos = new List<MessageDto>();
+        foreach (var message in messages)
+        {
+            messageDtos.Add(new MessageDto()
+            {
+                Id = message.Id,
+                ChatId = message.ChatId,
+                AuthorId = message.AuthorId,
+                UserType = message.Author.Type == UserType.Bot ? "bot" : "user",
+                Content = message.Content,
+                Timestamp = message.Timestamp,
+            });
+        }
+
+        var dto = new ChatDetailsDto()
+        {
+            Id = chat.Id,
+            Name = chat.Name,
+            Members = memberDtos,
+            Messages = messageDtos,
+        };
+        return dto;
+    }
+
+    public async Task<ChatListItemDto> CreateChatAsync(Guid userId, CreateChatRequest request)
     {
         var chat = new Chat(request.Name);
         await _chatRepository.AddChatAsync(chat);
@@ -50,7 +96,7 @@ public class ChatService : IChatService
         var member2 = new ChatMember() { UserId = request.BotId, ChatId = chat.Id };
         await _chatMemberRepository.AddParticipantAsync(member2);
         
-        var chatdto = new ChatDto()
+        var chatdto = new ChatListItemDto()
         {
             Id = chat.Id,
             Name = chat.Name,

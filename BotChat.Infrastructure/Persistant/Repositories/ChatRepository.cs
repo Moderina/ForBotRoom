@@ -17,7 +17,7 @@ public class ChatRepository : IChatRepository
         return _db.Chats.Where(chat => !chat.Disabled).ToListAsync();
     }
 
-    public Task<Chat?> GetChatAsync(long chatId)
+    public Task<Chat?> GetChatAsync(Guid chatId)
     {
         return _db.Chats.FindAsync(chatId).AsTask();
     }

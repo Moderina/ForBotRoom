@@ -1,7 +1,7 @@
 import {ref} from 'vue'
 import {defineStore} from 'pinia'
 import type {Chat} from "@/types/Chat.ts";
-import {createChat, disableChat, getChatsList} from "@/api/chatsApi.ts";
+import {createChat, disableChat, getChatDetails, getChatsList} from "@/api/chatsApi.ts";
 import type {Message} from "@/types/Message.ts";
 import {useUserStore} from "@/stores/userStore.ts";
 import * as MessageApi from "@/api/MessageApi.ts";
@@ -51,7 +51,9 @@ export const useChatStore = defineStore('chat', () => {
     messages.value = [];
 
     const params = {};
-    messages.value = await MessageApi.getMessagesHistory(currentChat.value.id, params);
+    currentChat.value = await getChatDetails(chat.id);
+    messages.value = currentChat.value.messages;
+    
   }
 
   async function sendMessage(content: string) {
@@ -70,6 +72,10 @@ export const useChatStore = defineStore('chat', () => {
     messages.value.push(msg)
   }
 
+  function getMember(authorId: string) {
+    return currentChat.value?.members.find(m => m.userId === authorId);
+  }
+
   return {
     chats,
     currentChat,
@@ -80,6 +86,6 @@ export const useChatStore = defineStore('chat', () => {
     addChat,
     removeChat,
     sendMessage,
-    
+    getMember,
   };
 })

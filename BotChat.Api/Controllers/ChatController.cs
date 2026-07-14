@@ -21,7 +21,7 @@ public class ChatController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<ChatDto>> GetChats([FromQuery] bool active = true)
+    public async Task<ActionResult<ChatListItemDto>> GetChats([FromQuery] bool active = true)
     {
         var chats = await _chatService.GetActiveChatsAsync();
         
@@ -29,7 +29,7 @@ public class ChatController : ControllerBase
     }
     
     [HttpPost("new")]
-    public async Task<ActionResult<ChatDto>> CreateNewChat([FromBody] CreateChatRequest request)
+    public async Task<ActionResult<ChatListItemDto>> CreateNewChat([FromBody] CreateChatRequest request)
     {
         var authHeader = Request.Headers.Authorization.ToString();
         var token = authHeader.Replace("Bearer ", "");
@@ -41,11 +41,18 @@ public class ChatController : ControllerBase
     }
     
     [HttpPost("{chatid}/disable")]
-    public async Task<ActionResult<ChatDto>> DisableChat(Guid chatId)
+    public async Task<ActionResult<ChatListItemDto>> DisableChat(Guid chatId)
     {
         await _chatService.DisableChatAsync(chatId);
         
         return NoContent();
+    }
+    
+    [HttpGet("{chatId}")]
+    public async Task<ActionResult<ChatDetailsDto>> LoadChat(Guid chatId)
+    {
+        var chat = await _chatService.GetChatDetailsAsync(chatId);
+        return Ok(chat);
     }
     
     [HttpGet("{chatId}/messages")]

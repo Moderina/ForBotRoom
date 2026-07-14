@@ -6,7 +6,7 @@ public interface IChatRepository
 {
     Task<List<Chat>> GetActiveChatsAsync();
     
-    Task<Chat?> GetChatAsync(long chatId);
+    Task<Chat?> GetChatAsync(Guid chatId);
     
     Task AddChatAsync(Chat chat);
     

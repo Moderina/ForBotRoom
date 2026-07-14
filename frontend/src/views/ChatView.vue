@@ -3,11 +3,11 @@ import {computed, nextTick, ref, watch} from "vue"
 import {useChatStore} from "@/stores/chatStore.ts";
 import {storeToRefs} from "pinia";
 import {useUserStore} from "@/stores/userStore.ts";
+import {getFileUrl} from "@/utils/fileUrl.ts";
 
 const chatStore = useChatStore()
 const userStore = useUserStore()
 
-const chatName = ref("")
 const messagesDiv = ref<HTMLDivElement | null>(null)
 const { messages } = storeToRefs(chatStore)
 const input = ref("")
@@ -51,10 +51,38 @@ watch(messages, async () => {
       <div class="messages" ref="messagesDiv">
         <div
             v-for="(msg, index) in messages"
-            :key="index"
-            :class="['msg', msg.authorId == userStore.user?.id ? 'user' : 'bot']"
+            :key="msg.id"
+            :class="[
+              'message-row',
+              msg.authorId === userStore.user?.id ? 'user-row' : 'bot-row'
+            ]"
         >
-          {{ msg.content }}
+          <img
+              v-if="msg.authorId !== userStore.user?.id && (index === messages.length - 1 || messages[index + 1]?.authorId !== msg.authorId)"
+              :src="getFileUrl(chatStore.getMember(msg.authorId)?.profilePictureUrl)"
+              class="avatar"
+          />
+
+          <div
+              v-else-if="msg.authorId !== userStore.user?.id"
+              class="avatar-spacer"
+          ></div>
+
+          <div
+              :class="['msg', msg.authorId === userStore.user?.id ? 'user' : 'bot']"
+          >
+            {{ msg.content }}
+          </div>
+
+          <img
+              v-if="msg.authorId === userStore.user?.id && (index === messages.length - 1 || messages[index + 1]?.authorId !== msg.authorId)"
+              :src="getFileUrl(userStore.user.profilePictureUrl)"
+              class="avatar"
+          />
+          <div
+              v-else-if="msg.authorId === userStore.user?.id"
+              class="avatar-spacer"
+          ></div>
         </div>
       </div>
 
@@ -92,6 +120,21 @@ watch(messages, async () => {
   min-height: 0;
 }
 
+.message-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin: 3px 0;
+}
+
+.bot-row {
+  justify-content: flex-start;
+}
+
+.user-row {
+  justify-content: flex-end;
+}
+
 .msg {
   margin: 6px 0;
   padding: 6px 8px;
@@ -99,6 +142,7 @@ watch(messages, async () => {
   max-width: 80%;
   justify-self: end;
 }
+
 
 .user {
   background: #3a3a3a;
@@ -108,6 +152,23 @@ watch(messages, async () => {
 .bot {
   background: #2a2a2a;
   align-self: flex-start;
+}
+
+
+.avatar,
+.avatar-spacer {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-spacer {
+  visibility: hidden;
 }
 
 input {

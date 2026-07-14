@@ -5,9 +5,11 @@ namespace BotChat.App.ChatLogic;
 
 public interface IChatService
 {
-    Task<List<ChatDto>> GetActiveChatsAsync();
+    Task<List<ChatListItemDto>> GetActiveChatsAsync();
     Task<List<User>> GetHumanMembersOfChatAsync(Guid chatId);
-    Task<ChatDto> CreateChatAsync(Guid userId, CreateChatRequest request);
+    
+    Task<ChatDetailsDto> GetChatDetailsAsync(Guid chatId);
+    Task<ChatListItemDto> CreateChatAsync(Guid userId, CreateChatRequest request);
     Task DisableChatAsync(Guid chatId);
     Task DeleteChatAsync(Guid chatId);
 }

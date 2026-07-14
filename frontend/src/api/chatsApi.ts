@@ -14,6 +14,10 @@ export function getDisabledChats(): Promise<Chat[]> {
     return api<Chat[]>("/api/chats?active=false");
 }
 
+export function getChatDetails(chatId: string): Promise<Chat> {
+    return api<Chat>(`/api/chats/${chatId}`);
+}
+
 export function createChat(request : CreateChatRequest): Promise<Chat> {
     return api<Chat>("/api/chats/new", {
         method: "POST",
