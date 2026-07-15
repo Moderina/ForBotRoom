@@ -29,7 +29,7 @@ public class ChatController : ControllerBase
     }
     
     [HttpPost("new")]
-    public async Task<ActionResult<ChatListItemDto>> CreateNewChat([FromBody] CreateChatRequest request)
+    public async Task<ActionResult<ChatDetailsDto>> CreateNewChat([FromBody] CreateChatRequest request)
     {
         var authHeader = Request.Headers.Authorization.ToString();
         var token = authHeader.Replace("Bearer ", "");

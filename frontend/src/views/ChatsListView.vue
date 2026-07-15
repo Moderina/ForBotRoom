@@ -15,7 +15,7 @@ async function selectChat(chat: Chat) {
 
 async function createNewChat(name: string, botId: string) {
   console.log("new chat name:", name);
-  let newChat = await chatStore.addChat(name, botId);
+  await chatStore.addChat(name, botId);
   showCreateModal.value = false;
 }
 

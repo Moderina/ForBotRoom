@@ -87,7 +87,7 @@ public class ChatService : IChatService
         return dto;
     }
 
-    public async Task<ChatListItemDto> CreateChatAsync(Guid userId, CreateChatRequest request)
+    public async Task<ChatDetailsDto> CreateChatAsync(Guid userId, CreateChatRequest request)
     {
         var chat = new Chat(request.Name);
         await _chatRepository.AddChatAsync(chat);
@@ -96,12 +96,7 @@ public class ChatService : IChatService
         var member2 = new ChatMember() { UserId = request.BotId, ChatId = chat.Id };
         await _chatMemberRepository.AddParticipantAsync(member2);
         
-        var chatdto = new ChatListItemDto()
-        {
-            Id = chat.Id,
-            Name = chat.Name,
-        };
-        return chatdto;
+        return await GetChatDetailsAsync(chat.Id);
     }
 
     public async Task DisableChatAsync(Guid chatId)

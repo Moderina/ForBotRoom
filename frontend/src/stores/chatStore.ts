@@ -50,7 +50,6 @@ export const useChatStore = defineStore('chat', () => {
     currentChat.value = chat;
     messages.value = [];
 
-    const params = {};
     currentChat.value = await getChatDetails(chat.id);
     messages.value = currentChat.value.messages;
     
