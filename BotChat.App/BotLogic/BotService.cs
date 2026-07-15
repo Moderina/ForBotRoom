@@ -1,3 +1,4 @@
+using System.Text.Json;
 using BotChat.App.UserLogic;
 using BotChat.Contracts.Bots;
 using BotChat.Domain;
@@ -58,33 +59,26 @@ public class BotService : IBotService
         };
     }
 
-    public async Task<BotDetailsDto> CreateBotAsync(CreateBotRequest bot)
+    public async Task<BotDetailsDto> CreateBotAsync(string Name, string Personality, string ProfilePicutreUrl)
     {
-        var savedUser = await _userRepository.CreateUserAsync(new User(bot.Name, UserType.Bot));
-        var personalityData = new PersonalityData
-        {
-            CoreIdentity = bot.PersonalityData.CoreIdentity,
-            Dislikes = bot.PersonalityData.Dislikes,
-            Likes = bot.PersonalityData.Likes,
-            Interests = bot.PersonalityData.Interests,
-            Personality = bot.PersonalityData.Personality,
-            TextingStyle = bot.PersonalityData.TextingStyle,
-            Example = bot.PersonalityData.Example
-        };
+        var savedUser = await _userRepository.CreateUserAsync(new User(Name, UserType.Bot, ProfilePicutreUrl));
+        var personalityData = JsonSerializer.Deserialize<PersonalityData>(Personality);
+
         var newbot =await _botRepository.AddBotAsync(new Bot(savedUser.Id, personalityData));
         return MakeDto(newbot);
     }
 
-    public async Task<BotDetailsDto?> UpdateBotAsync(Guid id, CreateBotRequest bot)
+    public async Task<BotDetailsDto?> UpdateBotAsync(Guid id, string Name, string Personality, string ProfilePicutreUrl)
     {
         var savedBot = await _botRepository.GetBotByIdAsync(id);
         if (savedBot == null) return null;
         
-        if (!string.IsNullOrWhiteSpace(bot.Name))
+        if (!string.IsNullOrWhiteSpace(Name))
         {
-            savedBot.User.Name = bot.Name;
+            savedBot.User.Name = Name;
         }
-        MapPersonalityData(savedBot.PersonalityData, bot.PersonalityData);
+        var personalityData = JsonSerializer.Deserialize<PersonalityData>(Personality);
+        savedBot.PersonalityData = personalityData;
         await _botRepository.UpdateBotAsync(savedBot);
         
         return MakeDto(savedBot);

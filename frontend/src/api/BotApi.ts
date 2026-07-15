@@ -14,9 +14,9 @@ export function getBotDetails(botId : string): Promise<Bot> {
     return api<Bot>(`/api/bots/${botId}/details`);
 }
 
-export function createBot(request : BotForm): Promise<Bot> {
-    return api<Bot>("/api/bots/create", {
+export function createBot(request : FormData): Promise<Bot> {
+    return api<Bot>("/api/bots", {
         method: "POST",
-        body: JSON.stringify(request),
-    });
+        body: request,
+    }, true);
 }

@@ -11,6 +11,8 @@ export interface Bot {
     id: string
     name: string
     personalityData: IPersonality | null
+    profilePictureUrl: string
+
 }
 
 export interface BotForm {

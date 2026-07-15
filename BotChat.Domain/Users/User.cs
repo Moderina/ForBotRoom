@@ -13,11 +13,12 @@ public class User
     public string? ProfilePictureUrl { get; set; }
     public DateTime CreatedAtUtc { get; set; }
 
-    public User(string name, UserType type)
+    public User(string name, UserType type, string? profilePictureUrl)
     {
         Id = Guid.NewGuid();
         Name = name;
         Type = type;
+        ProfilePictureUrl = profilePictureUrl ?? "";
         CreatedAtUtc = DateTime.UtcNow;
     }
 }

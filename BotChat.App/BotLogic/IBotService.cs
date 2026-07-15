@@ -11,9 +11,9 @@ public interface IBotService
     
     Task<Bot?> GetBotByIdAsync(Guid id);
     
-    Task<BotDetailsDto> CreateBotAsync(CreateBotRequest bot);
+    Task<BotDetailsDto> CreateBotAsync(string Name, string PersonalityData, string ProfilePicutreUrl);
     
-    Task<BotDetailsDto?> UpdateBotAsync(Guid id, CreateBotRequest bot);
+    Task<BotDetailsDto?> UpdateBotAsync(Guid id, string Name, string Personality, string ProfilePicutreUrl);
     
     Task DeleteBotAsync(Guid id);
 }

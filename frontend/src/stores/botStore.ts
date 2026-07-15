@@ -20,7 +20,19 @@ export const useBotStore = defineStore('bot', () => {
         selectedBot.value = await getBotDetails(selectedBot.value.id);
     }
 
-    async function addBot(data: BotForm) {
+    async function addBot(form: BotForm, avatar: File | null) {
+        const data = new FormData();
+
+        data.append("name", form.name);
+        data.append(
+            "personalityData",
+            JSON.stringify(form.personalityData)
+        );
+
+        if (avatar) {
+            data.append("profilePicture", avatar);
+        }
+        console.log(data);
         const newBot = await createBot(data);
 
         bots.value.push(newBot);

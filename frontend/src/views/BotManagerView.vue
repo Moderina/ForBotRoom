@@ -2,23 +2,23 @@
 import {computed, onMounted, ref} from "vue"
 import {type Bot, type BotForm, createEmptyBotForm} from "@/types/Bot.ts";
 import {useBotStore} from "@/stores/botStore.ts";
+import {getFileUrl} from "@/utils/fileUrl.ts";
 
-const agentStore = ref([] as Bot[])
 const botStore = useBotStore()
 
-const selectedAgentId = ref<number | null>(null);
-
 const form = ref<BotForm>({ ...createEmptyBotForm() })
-
 const isEditing = computed(() => !!botStore.selectedBot)
 const activeInput = ref<string>("Name")
+
+const avatarFile = ref<File | null>(null);
+const avatarPreview = ref<string | null>(null);
 
 async function saveBot() {
   console.log(isEditing.value)
   console.log(form.value)
   const method = isEditing.value ? "PUT" : "POST"
   
-  await botStore.addBot(form.value)
+  await botStore.addBot(form.value, avatarFile.value ?? null)
 }
 
 async function deleteBot() {
@@ -29,9 +29,12 @@ async function deleteBot() {
   // agentStore.selectAgent(null)
 }
 
-function newAgent() {
+function newBot() {
   botStore.selectedBot = null;
   form.value = createEmptyBotForm();
+
+  avatarFile.value = null;
+  avatarPreview.value = null;
 }
 
 async function editBot(bot: Bot) {
@@ -44,6 +47,12 @@ async function editBot(bot: Bot) {
       name: botStore.selectedBot.name,
       personalityData: botStore.selectedBot.personalityData
     };
+
+    avatarPreview.value = botStore.selectedBot.profilePictureUrl
+        ? getFileUrl(botStore.selectedBot.profilePictureUrl)
+        : null;
+
+    avatarFile.value = null;
   }
 }
 
@@ -51,18 +60,28 @@ function changeActiveInput(inputname: string) {
   activeInput.value = inputname
 }
 
-;
+function onAvatarSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+
+  if (!input.files?.length)
+    return;
+
+  avatarFile.value = input.files[0];
+  avatarPreview.value = URL.createObjectURL(input.files[0]);
+}
+
+
 onMounted(() => {
   botStore.loadBots();
 });
 </script>
 
 <template>
-  <div class="agent-manager flex-1 border-l-4">
-    <div class="agent-list">
+  <div class="bot-manager flex-1 border-l-4">
+    <div class="bot-list">
       <h2>Agents</h2>
 
-      <button @click="newAgent">+ New Agent</button>
+      <button @click="newBot">+ New Agent</button>
 
       <ul>
         <li
@@ -76,11 +95,24 @@ onMounted(() => {
       </ul>
     </div>
 
-    <div class="agent-form">
+    <div class="bot-form">
       <div class="flex justify-between">
-        <h2>{{ isEditing ? "Edit Agent" : "Create Agent" }}</h2>
-        <h2>{{activeInput}}</h2>
+        <h2>{{ isEditing ? "Edit Bot" : "Create Bot" }}</h2>
+        <h2>{{ activeInput }}</h2>
+      </div>
 
+      <div class="avatar-picker">
+        <img
+            :src="avatarPreview ?? '/default-avatar.png'"
+            class="avatar-preview"
+            alt="Bot avatar"
+        />
+
+        <input
+            type="file"
+            accept="image/*"
+            @change="onAvatarSelected"
+        />
       </div>
 
       <input v-model="form.name" placeholder="Name" @focusin="changeActiveInput('Name')" />
@@ -123,7 +155,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.agent-manager {
+.bot-manager {
   display: flex;
   gap: 20px;
   padding: 20px;
@@ -131,36 +163,55 @@ onMounted(() => {
   width: 100%;
 }
 
-.agent-list {
+.bot-list {
   width: 250px;
   flex: 1;
 }
 
-.agent-form {
+.bot-form {
   flex: 2;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.agent-form textarea {
-  resize: none;
-  flex: 0 0 60px; /* default small */
-  transition: flex 0.25s ease, height 0.25s ease;
-
+.avatar-picker {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
-.agent-form textarea:focus {
+.avatar-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #222;
+  border: 1px solid #444;
+}
+
+.bot-form textarea {
+  resize: none;
+  flex: 0 0 60px;
+  transition: flex 0.25s ease, height 0.25s ease;
+}
+
+.bot-form textarea:focus {
   flex: 1;
 }
 
-.agent-form input,
-.agent-form textarea {
+.bot-form input,
+.bot-form textarea {
   padding: 8px;
   border-radius: 4px;
   border: 1px solid #444;
   background: #222;
   color: #fff;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
 }
 
 button {

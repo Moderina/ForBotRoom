@@ -11,7 +11,7 @@ public class DbInit
         if (await db.Users.AnyAsync())
             return;
 
-        db.Users.Add(new User("Real Human Being", UserType.Human));
+        db.Users.Add(new User("Real Human Being", UserType.Human, ""));
 
         await db.SaveChangesAsync();
     }

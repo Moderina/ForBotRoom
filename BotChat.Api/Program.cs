@@ -1,3 +1,4 @@
+using System.Text.Json;
 using BotChat.Api.Controllers;
 using BotChat.Api.Hubs;
 using BotChat.App.BotLogic;
@@ -31,7 +32,14 @@ builder.Services.AddHttpClient<ILlmService, LlamaCppService>(client =>
 });
 
 builder.Services.AddApplication();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy =
+            JsonNamingPolicy.CamelCase;
+
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });;
 builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddScoped<IUserService, UserService>();
