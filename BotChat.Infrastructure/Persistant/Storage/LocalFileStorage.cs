@@ -7,6 +7,7 @@ namespace BotChat.Infrastructure.Persistant.Storage;
 public class LocalFileStorage : IFileStorage
 {
     private readonly string _storagePath;
+    private readonly string _profilePicturesPath = "Media/ProfilePictures";
 
     public LocalFileStorage(IConfiguration configuration)
     {
@@ -15,7 +16,6 @@ public class LocalFileStorage : IFileStorage
                 Environment.SpecialFolder.LocalApplicationData),
             "ForBotRoom");
     }
-
 
     public async Task<string> SaveAsync(FileUpload file, string folder, CancellationToken cancellationToken = default)
     {
@@ -36,8 +36,7 @@ public class LocalFileStorage : IFileStorage
 
     public async Task<string> SaveProfilePictureAsync(FileUpload file, CancellationToken cancellationToken = default)
     {
-        var storageFolder = "Media/ProfilePictures";
-        var directory = Path.Combine(_storagePath, storageFolder);
+        var directory = Path.Combine(_storagePath, _profilePicturesPath);
         Directory.CreateDirectory(directory);
         
         var extension = Path.GetExtension(file.FileName);
@@ -49,6 +48,44 @@ public class LocalFileStorage : IFileStorage
         
         await file.Content.CopyToAsync(stream, cancellationToken);
 
-        return Path.Combine(storageFolder, fileName);
+        return Path.Combine(fileName);
+    }
+
+    public async Task<FileResult> GetProfilePictureAsync(string fileName, CancellationToken cancellationToken)
+    {
+        var safeFileName = Path.GetFileName(fileName);
+        var path = Path.Combine(_storagePath, _profilePicturesPath, safeFileName);
+        
+        if (!File.Exists(path))
+            return null;
+        
+        var stream = new FileStream(
+            path,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read);
+        
+        var contentType = GetContentType(path);
+        
+        return new FileResult()
+        {
+            Content = stream,
+            ContentType = contentType
+        };
+    }
+    
+    private static string GetContentType(string path)
+    {
+        var extension = Path.GetExtension(path).ToLowerInvariant();
+
+        return extension switch
+        {
+            ".jpg" or ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            ".gif" => "image/gif",
+            ".webp" => "image/webp",
+
+            _ => "application/octet-stream"
+        };
     }
 }

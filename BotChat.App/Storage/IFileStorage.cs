@@ -12,4 +12,6 @@ public interface IFileStorage
     Task<string> SaveProfilePictureAsync(
         FileUpload file,
         CancellationToken cancellationToken = default);
+
+    Task<FileResult> GetProfilePictureAsync(string fileName, CancellationToken cancellationToken);
 }
