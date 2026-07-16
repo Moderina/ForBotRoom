@@ -25,7 +25,7 @@ namespace BotChat.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("PersonalityData")
+                    b.Property<string>("PersonalityProfile")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

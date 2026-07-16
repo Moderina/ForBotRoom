@@ -25,14 +25,13 @@ export const useBotStore = defineStore('bot', () => {
 
         data.append("name", form.name);
         data.append(
-            "personalityData",
-            JSON.stringify(form.personalityData)
+            "personalityProfile",
+            JSON.stringify(form.personalityProfile)
         );
 
         if (avatar) {
             data.append("profilePicture", avatar);
         }
-        console.log(data);
         const newBot = await createBot(data);
 
         bots.value.push(newBot);

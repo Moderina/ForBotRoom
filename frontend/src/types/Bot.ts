@@ -10,21 +10,21 @@ export interface IPersonality {
 export interface Bot {
     id: string
     name: string
-    personalityData: IPersonality | null
+    personalityProfile: IPersonality | null
     profilePictureUrl: string
 
 }
 
 export interface BotForm {
     name: string
-    personalityData: IPersonality
+    personalityProfile: IPersonality
 }
 
 
 export function createEmptyBotForm(): BotForm {
     return {
         name: "",
-        personalityData: {
+        personalityProfile: {
             coreIdentity: "",
             personality: "",
             textingStyle: "",

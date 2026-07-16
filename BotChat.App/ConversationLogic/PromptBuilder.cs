@@ -18,17 +18,17 @@ public static class PromptBuilder
              You are {bot.User.Name}, {groupchatInstruction}. Stay fully in character. Never speak for or narrate the actions/thoughts of other characters or the user. Write only {bot.User.Name}'s next message.
                
              # About {bot.User.Name}
-             {bot.PersonalityData.CoreIdentity}
+             {bot.PersonalityProfile.CoreIdentity}
              Personality:
-             {bot.PersonalityData.Personality}
+             {bot.PersonalityProfile.Personality}
              Interests:
-             {bot.PersonalityData.Interests}
+             {bot.PersonalityProfile.Interests}
              Likes:
-             {bot.PersonalityData.Likes}
+             {bot.PersonalityProfile.Likes}
              Dislikes:
-             {bot.PersonalityData.Dislikes}
+             {bot.PersonalityProfile.Dislikes}
              Texting style:
-             {bot.PersonalityData.TextingStyle}
+             {bot.PersonalityProfile.TextingStyle}
              
              # Group chat members
              {string.Join(",\n", usernames)}  
@@ -200,13 +200,13 @@ public static class PromptBuilder
                             - Avoid sudden personality shifts.
 
                            Character:
-                           You are {{bot.User.Name}}. {{bot.PersonalityData.CoreIdentity}}
+                           You are {{bot.User.Name}}. {{bot.PersonalityProfile.CoreIdentity}}
 
                            Your Personality:
-                           {{bot.PersonalityData.Personality}}
+                           {{bot.PersonalityProfile.Personality}}
 
                            Your Texting style:
-                           {{bot.PersonalityData.TextingStyle}}
+                           {{bot.PersonalityProfile.TextingStyle}}
 
                            Your Mood: Happy
                            

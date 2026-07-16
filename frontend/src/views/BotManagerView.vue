@@ -39,13 +39,13 @@ function newBot() {
 
 async function editBot(bot: Bot) {
   
-  if(!bot.personalityData) {
+  if(!bot.personalityProfile) {
     await botStore.loadBotDetails(bot);
   }
-  if (botStore.selectedBot && botStore.selectedBot.personalityData) {
+  if (botStore.selectedBot && botStore.selectedBot.personalityProfile) {
     form.value = {
       name: botStore.selectedBot.name,
-      personalityData: botStore.selectedBot.personalityData
+      personalityProfile: botStore.selectedBot.personalityProfile
     };
 
     avatarPreview.value = botStore.selectedBot.profilePictureUrl
@@ -117,17 +117,17 @@ onMounted(() => {
 
       <input v-model="form.name" placeholder="Name" @focusin="changeActiveInput('Name')" />
 
-      <textarea v-model="form.personalityData.coreIdentity" placeholder="Core Identity" @focusin="changeActiveInput('Core Identity')" />
+      <textarea v-model="form.personalityProfile.coreIdentity" placeholder="Core Identity" @focusin="changeActiveInput('Core Identity')" />
 
-      <textarea v-model="form.personalityData.personality" placeholder="Personality" @focusin="changeActiveInput('Personality')" />
+      <textarea v-model="form.personalityProfile.personality" placeholder="Personality" @focusin="changeActiveInput('Personality')" />
 
-      <textarea v-model="form.personalityData.textingStyle" placeholder="textingStyle" @focusin="changeActiveInput('TextingStyle')" />
+      <textarea v-model="form.personalityProfile.textingStyle" placeholder="textingStyle" @focusin="changeActiveInput('TextingStyle')" />
 
-      <textarea v-model="form.personalityData.interests" placeholder="interests" @focusin="changeActiveInput('Interests')" />
+      <textarea v-model="form.personalityProfile.interests" placeholder="interests" @focusin="changeActiveInput('Interests')" />
 
-      <textarea v-model="form.personalityData.likes" placeholder="likes" @focusin="changeActiveInput('Likes')" />
+      <textarea v-model="form.personalityProfile.likes" placeholder="likes" @focusin="changeActiveInput('Likes')" />
 
-      <textarea v-model="form.personalityData.dislikes" placeholder="dislikes" @focusin="changeActiveInput('Dislikes')" />
+      <textarea v-model="form.personalityProfile.dislikes" placeholder="dislikes" @focusin="changeActiveInput('Dislikes')" />
 
       <!--      <input-->
       <!--          type="number"-->

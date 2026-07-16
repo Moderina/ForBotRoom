@@ -41,28 +41,28 @@ public class BotService : IBotService
     {
         var bot = await _botRepository.GetBotByIdAsync(id);
 
-        var personalitydto = new PersonalityDataDto()
+        var personalitydto = new PersonalityProfileDto()
         {
-            CoreIdentity = bot.PersonalityData.CoreIdentity,
-            Dislikes = bot.PersonalityData.Dislikes,
-            Likes = bot.PersonalityData.Likes,
-            Interests = bot.PersonalityData.Interests,
-            Personality = bot.PersonalityData.Personality,
-            TextingStyle = bot.PersonalityData.TextingStyle,
-            Example = bot.PersonalityData.Example
+            CoreIdentity = bot.PersonalityProfile.CoreIdentity,
+            Dislikes = bot.PersonalityProfile.Dislikes,
+            Likes = bot.PersonalityProfile.Likes,
+            Interests = bot.PersonalityProfile.Interests,
+            Personality = bot.PersonalityProfile.Personality,
+            TextingStyle = bot.PersonalityProfile.TextingStyle,
+            Example = bot.PersonalityProfile.Example
         };
         return new BotDetailsDto()
         {
             Id = bot.UserId,
             Name = bot.User.Name,
-            PersonalityData = personalitydto
+            PersonalityProfile = personalitydto
         };
     }
 
     public async Task<BotDetailsDto> CreateBotAsync(string Name, string Personality, string ProfilePicutreUrl)
     {
         var savedUser = await _userRepository.CreateUserAsync(new User(Name, UserType.Bot, ProfilePicutreUrl));
-        var personalityData = JsonSerializer.Deserialize<PersonalityData>(Personality);
+        var personalityData = JsonSerializer.Deserialize<PersonalityProfile>(Personality);
 
         var newbot =await _botRepository.AddBotAsync(new Bot(savedUser.Id, personalityData));
         return MakeDto(newbot);
@@ -77,8 +77,8 @@ public class BotService : IBotService
         {
             savedBot.User.Name = Name;
         }
-        var personalityData = JsonSerializer.Deserialize<PersonalityData>(Personality);
-        savedBot.PersonalityData = personalityData;
+        var personalityData = JsonSerializer.Deserialize<PersonalityProfile>(Personality);
+        savedBot.PersonalityProfile = personalityData;
         await _botRepository.UpdateBotAsync(savedBot);
         
         return MakeDto(savedBot);
@@ -89,47 +89,47 @@ public class BotService : IBotService
         return Task.CompletedTask;
     }
     
-    private void MapPersonalityData(PersonalityData data, PersonalityDataDto dto)
+    private void MapPersonalityData(PersonalityProfile profile, PersonalityProfileDto dto)
     {
         if (!string.IsNullOrWhiteSpace(dto.Personality))
-            data.Personality = dto.Personality;
+            profile.Personality = dto.Personality;
 
         if (!string.IsNullOrWhiteSpace(dto.Likes))
-            data.Likes = dto.Likes;
+            profile.Likes = dto.Likes;
 
         if (!string.IsNullOrWhiteSpace(dto.Dislikes))
-            data.Dislikes = dto.Dislikes;
+            profile.Dislikes = dto.Dislikes;
         
         if (!string.IsNullOrWhiteSpace(dto.CoreIdentity))
-            data.CoreIdentity = dto.CoreIdentity;
+            profile.CoreIdentity = dto.CoreIdentity;
         
         if (!string.IsNullOrWhiteSpace(dto.TextingStyle))
-            data.TextingStyle = dto.TextingStyle;
+            profile.TextingStyle = dto.TextingStyle;
         
         if (!string.IsNullOrWhiteSpace(dto.Interests))
-            data.Interests = dto.Interests;
+            profile.Interests = dto.Interests;
         
         if (!string.IsNullOrWhiteSpace(dto.Example))
-            data.Example = dto.Example;
+            profile.Example = dto.Example;
     }
 
     private BotDetailsDto MakeDto(Bot bot)
     {
-        var personalitydto = new PersonalityDataDto()
+        var personalitydto = new PersonalityProfileDto()
         {
-            CoreIdentity = bot.PersonalityData.CoreIdentity,
-            Dislikes = bot.PersonalityData.Dislikes,
-            Likes = bot.PersonalityData.Likes,
-            Interests = bot.PersonalityData.Interests,
-            Personality = bot.PersonalityData.Personality,
-            TextingStyle = bot.PersonalityData.TextingStyle,
-            Example = bot.PersonalityData.Example
+            CoreIdentity = bot.PersonalityProfile.CoreIdentity,
+            Dislikes = bot.PersonalityProfile.Dislikes,
+            Likes = bot.PersonalityProfile.Likes,
+            Interests = bot.PersonalityProfile.Interests,
+            Personality = bot.PersonalityProfile.Personality,
+            TextingStyle = bot.PersonalityProfile.TextingStyle,
+            Example = bot.PersonalityProfile.Example
         };
         return new BotDetailsDto()
         {
             Id = bot.UserId,
             Name = bot.User.Name,
-            PersonalityData = personalitydto
+            PersonalityProfile = personalitydto
         };
     }
 }

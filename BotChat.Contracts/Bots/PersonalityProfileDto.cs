@@ -1,6 +1,6 @@
-namespace BotChat.Domain.Bots;
+namespace BotChat.Contracts.Bots;
 
-public class PersonalityData
+public class PersonalityProfileDto
 {
     public string CoreIdentity { get; set; } = "";
     public string Personality { get; set; } = "";

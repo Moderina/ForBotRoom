@@ -16,9 +16,9 @@ public class BotConfiguration : IEntityTypeConfiguration<Bot>
         builder.Property(x => x.UserId)
             .ValueGeneratedNever();
 
-        builder.Property(x => x.PersonalityData).HasConversion(
+        builder.Property(x => x.PersonalityProfile).HasConversion(
             v => JsonSerializer.Serialize(v, JsonHelper.CamelCase),
-            v => JsonSerializer.Deserialize<PersonalityData>(v, JsonHelper.CamelCase)!
+            v => JsonSerializer.Deserialize<PersonalityProfile>(v, JsonHelper.CamelCase)!
         );
         
         builder.Ignore(x => x.Mood);
