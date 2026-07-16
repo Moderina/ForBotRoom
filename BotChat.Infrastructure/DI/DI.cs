@@ -1,5 +1,7 @@
+using BotChat.App;
 using BotChat.App.Config;
 using BotChat.Infrastructure.Persistant;
+using BotChat.Infrastructure.Persistant.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +19,8 @@ public static class DI
         
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlite(dbSettings.ConnectionString));
+        
+        services.AddScoped<IFileStorage, LocalFileStorage>();
         
         return services;
     }

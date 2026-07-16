@@ -1,6 +1,7 @@
 using System.Text.Json;
 using BotChat.App.UserLogic;
 using BotChat.Contracts.Bots;
+using BotChat.Contracts.Storage;
 using BotChat.Domain;
 using BotChat.Domain.Bots;
 using BotChat.Domain.Users;
@@ -11,11 +12,13 @@ public class BotService : IBotService
 {
     private readonly IUserRepository _userRepository;
     private readonly IBotRepository _botRepository;
+    private readonly IFileStorage _fileStorage;
 
-    public BotService(IBotRepository botRepository, IUserRepository userRepository)
+    public BotService(IBotRepository botRepository, IUserRepository userRepository, IFileStorage fileStorage)
     {
         _userRepository = userRepository;
         _botRepository = botRepository;
+        _fileStorage = fileStorage;
     }
     public async Task<List<BotDto>> GetBotsAsync()
     {
@@ -59,11 +62,12 @@ public class BotService : IBotService
         };
     }
 
-    public async Task<BotDetailsDto> CreateBotAsync(string Name, string Personality, string ProfilePicutreUrl)
+    public async Task<BotDetailsDto> CreateBotAsync(string name, string personality, FileUpload profilePicture, CancellationToken cancellationToken)
     {
-        var savedUser = await _userRepository.CreateUserAsync(new User(Name, UserType.Bot, ProfilePicutreUrl));
-        var personalityData = JsonSerializer.Deserialize<PersonalityProfile>(Personality);
-
+        var profilePictureUrl = await _fileStorage.SaveProfilePictureAsync(profilePicture, cancellationToken);
+        var savedUser = await _userRepository.CreateUserAsync(new User(name, UserType.Bot, profilePictureUrl));
+        
+        var personalityData = JsonSerializer.Deserialize<PersonalityProfile>(personality);
         var newbot =await _botRepository.AddBotAsync(new Bot(savedUser.Id, personalityData));
         return MakeDto(newbot);
     }

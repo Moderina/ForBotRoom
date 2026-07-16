@@ -19,3 +19,5 @@ appsettings.Development.json
 /frontend/dist
 
 frontend/.vscode
+
+Data/

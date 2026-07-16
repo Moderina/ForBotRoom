@@ -1,5 +1,6 @@
 using BotChat.App.BotLogic;
 using BotChat.Contracts.Bots;
+using BotChat.Contracts.Storage;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BotChat.Api.Controllers;
@@ -33,16 +34,24 @@ public class BotController : ControllerBase
     }
     
     [HttpPost("")]
-    public async Task<ActionResult<BotDetailsDto>> CreateNewBot([FromForm] CreateBotRequest request)
+    public async Task<ActionResult<BotDetailsDto>> CreateNewBot([FromForm] CreateBotRequest request, CancellationToken cancellationToken)
     {
-        var profilePictureUrl = "";
-
-        if (request.ProfilePicture != null)
+        // var profilePictureUrl = "";
+        //
+        // if (request.ProfilePicture != null)
+        // {
+        //     profilePictureUrl = await SaveProfilePictureAsync(
+        //         request.ProfilePicture);
+        // }
+        var upload = new FileUpload
         {
-            profilePictureUrl = await SaveProfilePictureAsync(
-                request.ProfilePicture);
-        }
-        var botdto = await _botService.CreateBotAsync(request.Name, request.PersonalityData, profilePictureUrl);
+            Content = request.ProfilePicture.OpenReadStream(),
+
+            FileName = request.ProfilePicture.FileName,
+
+            ContentType = request.ProfilePicture.ContentType
+        };
+        var botdto = await _botService.CreateBotAsync(request.Name, request.PersonalityProfile, upload, cancellationToken);
         
         return Ok(botdto);
     }
