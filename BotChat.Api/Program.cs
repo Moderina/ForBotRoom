@@ -33,7 +33,6 @@ builder.Services.AddHttpClient<ILlmService, LlamaCppService>(client =>
         new Uri("http://localhost:11435");
 });
 
-builder.Services.AddApplication();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -41,26 +40,14 @@ builder.Services.AddControllers()
             JsonNamingPolicy.CamelCase;
 
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-    });;
+    });
 
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IChatService, ChatService>();
-builder.Services.AddScoped<IChatRepository, ChatRepository>();
-builder.Services.AddScoped<IChatMemberRepository, ChatMemberRepository>();
-builder.Services.AddScoped<IMessageService, MessageService>();
-builder.Services.AddScoped<IMessageRepository, MessageRepository>();
-builder.Services.AddScoped<IBotService, BotService>();
-builder.Services.AddScoped<IBotRepository, BotRepository>();
-builder.Services.AddScoped<IConversationService, ConversationService>();
-builder.Services.AddScoped<IChatNotifier, WebSocketChatNotifier>();
-builder.Services.AddSingleton<IConversationQueue, ConversationQueue>();
-builder.Services.AddSingleton<IAppDataPath, AppDataPath>();
-
+builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
+builder.Services.AddScoped<IChatNotifier, WebSocketChatNotifier>();
+
 builder.Services.AddSignalR();
-builder.Services.AddHostedService<ConversationWorker>();
 
 var app = builder.Build();
 

@@ -1,6 +1,11 @@
 using BotChat.App;
+using BotChat.App.BotLogic;
+using BotChat.App.ChatLogic;
 using BotChat.App.Config;
+using BotChat.App.ConversationLogic;
+using BotChat.App.UserLogic;
 using BotChat.Infrastructure.Persistant;
+using BotChat.Infrastructure.Persistant.Repositories;
 using BotChat.Infrastructure.Persistant.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,27 +19,32 @@ public static class DI
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IChatRepository, ChatRepository>();
+        services.AddScoped<IMessageRepository, MessageRepository>();
+        services.AddScoped<IBotRepository, BotRepository>();
+        services.AddScoped<IChatMemberRepository, ChatMemberRepository>();
+        
+        services.AddSingleton<IAppDataPath, AppDataPath>();
+        services.AddScoped<IFileStorage, LocalFileStorage>();
+
+        services.AddSingleton<IConversationQueue, ConversationQueue>();
+        services.AddHostedService<ConversationWorker>();
+        
         var dbSettings = configuration.GetSection("Database").Get<DBSettings>();
-        // Console.WriteLine($"Connection string: {dbSettings.ConnectionString}");
         
         services.AddDbContext<AppDbContext>((serviceProvider, options) =>
         {
             var paths = serviceProvider.GetRequiredService<IAppDataPath>();
-
             var dbDirectory = Path.GetDirectoryName(paths.DatabaseDirectory);
 
-            if (dbDirectory != null)
-            {
+            if (dbDirectory != null) {
                 Directory.CreateDirectory(dbDirectory);
             }
-            
             var dbPth = Path.Combine(paths.DatabaseDirectory, dbSettings.FileName);
 
-            options.UseSqlite(
-                $"Data Source={dbPth}");
+            options.UseSqlite($"Data Source={dbPth}");
         });
-        
-        services.AddScoped<IFileStorage, LocalFileStorage>();
         
         return services;
     }
