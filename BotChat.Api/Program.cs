@@ -1,6 +1,7 @@
 using System.Text.Json;
 using BotChat.Api.Controllers;
 using BotChat.Api.Hubs;
+using BotChat.App;
 using BotChat.App.BotLogic;
 using BotChat.App.ChatLogic;
 using BotChat.App.ConversationLogic;
@@ -11,6 +12,7 @@ using BotChat.App.UserLogic;
 using BotChat.Infrastructure.DI;
 using BotChat.Infrastructure.Persistant;
 using BotChat.Infrastructure.Persistant.Repositories;
+using BotChat.Infrastructure.Persistant.Storage;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +42,6 @@ builder.Services.AddControllers()
 
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });;
-builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -54,6 +55,9 @@ builder.Services.AddScoped<IBotRepository, BotRepository>();
 builder.Services.AddScoped<IConversationService, ConversationService>();
 builder.Services.AddScoped<IChatNotifier, WebSocketChatNotifier>();
 builder.Services.AddSingleton<IConversationQueue, ConversationQueue>();
+builder.Services.AddSingleton<IAppDataPath, AppDataPath>();
+
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddSignalR();
 builder.Services.AddHostedService<ConversationWorker>();

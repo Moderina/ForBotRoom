@@ -17,8 +17,22 @@ public static class DI
         var dbSettings = configuration.GetSection("Database").Get<DBSettings>();
         // Console.WriteLine($"Connection string: {dbSettings.ConnectionString}");
         
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlite(dbSettings.ConnectionString));
+        services.AddDbContext<AppDbContext>((serviceProvider, options) =>
+        {
+            var paths = serviceProvider.GetRequiredService<IAppDataPath>();
+
+            var dbDirectory = Path.GetDirectoryName(paths.DatabaseDirectory);
+
+            if (dbDirectory != null)
+            {
+                Directory.CreateDirectory(dbDirectory);
+            }
+            
+            var dbPth = Path.Combine(paths.DatabaseDirectory, dbSettings.FileName);
+
+            options.UseSqlite(
+                $"Data Source={dbPth}");
+        });
         
         services.AddScoped<IFileStorage, LocalFileStorage>();
         
