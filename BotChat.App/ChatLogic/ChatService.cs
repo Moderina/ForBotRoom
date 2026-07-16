@@ -54,11 +54,15 @@ public class ChatService : IChatService
         foreach (var member in members)
         {
             var user = member.User;
+            var imageUrl = string.IsNullOrEmpty(user.ProfilePictureUrl)
+                ? "/assets/images/default-profile.jpg"
+                : $"/api/media/profile-pictures/{user.ProfilePictureUrl}";
+            
             memberDtos.Add(new ChatMemberDto()
             {
                 UserId = user.Id,
                 Name = user.Name,
-                ProfilePictureUrl = user.ProfilePictureUrl,
+                ProfilePictureUrl = imageUrl,
                 Type = user.Type == UserType.Bot ? "bot" : "user",
             });
         }

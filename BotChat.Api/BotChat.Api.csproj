@@ -31,8 +31,4 @@
       <Folder Include="wwwroot\" />
     </ItemGroup>
 
-    <ItemGroup>
-      <None Include="wwwroot\uploads\profile-pics\kot.jpg" />
-    </ItemGroup>
-
 </Project>
