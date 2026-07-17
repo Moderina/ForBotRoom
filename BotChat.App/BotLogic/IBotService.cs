@@ -14,7 +14,7 @@ public interface IBotService
     
     Task<BotDetailsDto> CreateBotAsync(string name, string personalityProfile, FileUpload? fileUpload, CancellationToken cancellationToken);
     
-    Task<BotDetailsDto?> UpdateBotAsync(Guid id, string Name, string Personality, string ProfilePicutreUrl);
+    Task<BotDetailsDto?> UpdateBotAsync(Guid id, string Name, string Personality, FileUpload? profilePicture, CancellationToken cancellationToken);
     
     Task DeleteBotAsync(Guid id);
 }

@@ -5,4 +5,6 @@ public interface IUserRepository
     Task<Domain.User?> GetUserAsync();
     
     Task<Domain.User> CreateUserAsync(Domain.User user);
+    
+    Task<Domain.User> UpdateUserAsync(Domain.User user);
 }

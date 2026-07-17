@@ -31,7 +31,6 @@ public class BotRepository : IBotRepository
 
     public async Task<Bot> UpdateBotAsync(Bot bot)
     {
-        _db.Entry(bot).State = EntityState.Modified;
         await _db.SaveChangesAsync();
         return bot;
     }

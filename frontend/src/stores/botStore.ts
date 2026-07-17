@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {ref} from "vue";
 import type {Bot, BotForm} from "@/types/Bot.ts";
-import {createBot, getAllBots, getBotDetails} from "@/api/BotApi.ts";
+import {createBot, editBotRequest, getAllBots, getBotDetails} from "@/api/BotApi.ts";
 import {createChat} from "@/api/chatsApi.ts";
 
 export const useBotStore = defineStore('bot', () => {
@@ -38,10 +38,30 @@ export const useBotStore = defineStore('bot', () => {
         selectedBot.value = newBot;
     }
 
+    async function editBot(form: BotForm, avatar: File | null) {
+        if (selectedBot.value === null) return;
+        const data = new FormData();
+
+        data.append("name", form.name);
+        data.append(
+            "personalityProfile",
+            JSON.stringify(form.personalityProfile)
+        );
+
+        if (avatar) {
+            data.append("profilePicture", avatar);
+        }
+        const newBot = await editBotRequest(selectedBot.value?.id, data);
+
+        bots.value.push(newBot);
+        selectedBot.value = newBot;
+    }
+
     return {
         bots,
         selectedBot,
         addBot,
+        editBot,
         loadBots,
         loadBotDetails,
     };

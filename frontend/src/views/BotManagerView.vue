@@ -16,9 +16,13 @@ const avatarPreview = ref<string | null>(null);
 async function saveBot() {
   console.log(isEditing.value)
   console.log(form.value)
-  const method = isEditing.value ? "PUT" : "POST"
   
-  await botStore.addBot(form.value, avatarFile.value ?? null)
+  if (isEditing.value) {
+    await botStore.editBot(form.value, avatarFile.value ?? null)
+  }
+  else {
+    await botStore.addBot(form.value, avatarFile.value ?? null)
+  }
 }
 
 async function deleteBot() {
@@ -48,6 +52,7 @@ async function editBot(bot: Bot) {
       personalityProfile: botStore.selectedBot.personalityProfile
     };
 
+    console.log(botStore.selectedBot.profilePictureUrl);
     avatarPreview.value = botStore.selectedBot.profilePictureUrl
         ? getFileUrl(botStore.selectedBot.profilePictureUrl)
         : null;

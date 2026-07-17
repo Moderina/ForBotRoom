@@ -24,4 +24,10 @@ public class UserRepository : IUserRepository
         await _db.SaveChangesAsync();
         return newuser.Entity;
     }
+    
+    public async Task<User> UpdateUserAsync(User user)
+    {
+        await _db.SaveChangesAsync();
+        return user;
+    }
 }

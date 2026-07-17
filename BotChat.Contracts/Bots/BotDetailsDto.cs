@@ -5,4 +5,5 @@ public class BotDetailsDto
     public Guid Id { get; set; }
     public string Name { get; set; } 
     public PersonalityProfileDto PersonalityProfile { get; set; } 
+    public string ProfilePictureUrl { get; set; }
 }

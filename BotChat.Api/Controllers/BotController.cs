@@ -51,6 +51,24 @@ public class BotController : ControllerBase
         return Ok(botdto);
     }
     
+    [HttpPut("{botId}")]
+    public async Task<ActionResult<BotDetailsDto>> UpdateBot(Guid botId, [FromForm] CreateBotRequest request, CancellationToken cancellationToken)
+    {
+        FileUpload? upload = null;
+        if (request.ProfilePicture != null)
+        {
+            upload = new FileUpload
+            {
+                Content = request.ProfilePicture.OpenReadStream(),
+                FileName = request.ProfilePicture.FileName,
+                ContentType = request.ProfilePicture.ContentType
+            };
+        }
+        var botdto = await _botService.UpdateBotAsync(botId, request.Name, request.PersonalityProfile, upload, cancellationToken);
+        
+        return Ok(botdto);
+    }
+    
     private async Task<string> SaveProfilePictureAsync(
         IFormFile file)
     {

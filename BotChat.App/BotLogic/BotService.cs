@@ -58,7 +58,8 @@ public class BotService : IBotService
         {
             Id = bot.UserId,
             Name = bot.User.Name,
-            PersonalityProfile = personalitydto
+            PersonalityProfile = personalitydto,
+            ProfilePictureUrl = $"/api/media/profile-pictures/{bot.User.ProfilePictureUrl}",
         };
     }
 
@@ -71,22 +72,35 @@ public class BotService : IBotService
         }
         var savedUser = await _userRepository.CreateUserAsync(new User(name, UserType.Bot, profilePictureUrl));
         
-        var personalityData = JsonSerializer.Deserialize<PersonalityProfile>(personality);
+        var personalityData = JsonSerializer.Deserialize<PersonalityProfile>(personality, new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
         var newbot =await _botRepository.AddBotAsync(new Bot(savedUser.Id, personalityData));
         return MakeDto(newbot);
     }
 
-    public async Task<BotDetailsDto?> UpdateBotAsync(Guid id, string Name, string Personality, string ProfilePicutreUrl)
+    public async Task<BotDetailsDto?> UpdateBotAsync(Guid id, string name, string personality, FileUpload? profilePicture, CancellationToken cancellationToken)
     {
         var savedBot = await _botRepository.GetBotByIdAsync(id);
-        if (savedBot == null) return null;
-        
-        if (!string.IsNullOrWhiteSpace(Name))
+        if (savedBot == null)
         {
-            savedBot.User.Name = Name;
+            Console.WriteLine("Bot not found");
+            return null;
         }
-        var personalityData = JsonSerializer.Deserialize<PersonalityProfile>(Personality);
-        savedBot.PersonalityProfile = personalityData;
+        
+        if (!string.IsNullOrWhiteSpace(name))
+            savedBot.User.Name = name;
+        var personalityData = JsonSerializer.Deserialize<PersonalityProfile>(personality, new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
+        Console.WriteLine(personality);
+        if (personalityData != null)
+        {
+            Console.WriteLine(personalityData.CoreIdentity);
+            savedBot.PersonalityProfile = personalityData;
+        }
+        
+        if (profilePicture != null)
+        {
+            string profilePictureUrl = await _fileStorage.SaveProfilePictureAsync(profilePicture, cancellationToken);
+            savedBot.User.ProfilePictureUrl = profilePictureUrl;
+        }
         await _botRepository.UpdateBotAsync(savedBot);
         
         return MakeDto(savedBot);
