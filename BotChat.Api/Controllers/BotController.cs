@@ -36,21 +36,16 @@ public class BotController : ControllerBase
     [HttpPost("")]
     public async Task<ActionResult<BotDetailsDto>> CreateNewBot([FromForm] CreateBotRequest request, CancellationToken cancellationToken)
     {
-        // var profilePictureUrl = "";
-        //
-        // if (request.ProfilePicture != null)
-        // {
-        //     profilePictureUrl = await SaveProfilePictureAsync(
-        //         request.ProfilePicture);
-        // }
-        var upload = new FileUpload
+        FileUpload? upload = null;
+        if (request.ProfilePicture != null)
         {
-            Content = request.ProfilePicture.OpenReadStream(),
-
-            FileName = request.ProfilePicture.FileName,
-
-            ContentType = request.ProfilePicture.ContentType
-        };
+            upload = new FileUpload
+            {
+                Content = request.ProfilePicture.OpenReadStream(),
+                FileName = request.ProfilePicture.FileName,
+                ContentType = request.ProfilePicture.ContentType
+            };
+        }
         var botdto = await _botService.CreateBotAsync(request.Name, request.PersonalityProfile, upload, cancellationToken);
         
         return Ok(botdto);

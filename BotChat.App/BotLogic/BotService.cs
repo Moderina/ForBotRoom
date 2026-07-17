@@ -62,9 +62,13 @@ public class BotService : IBotService
         };
     }
 
-    public async Task<BotDetailsDto> CreateBotAsync(string name, string personality, FileUpload profilePicture, CancellationToken cancellationToken)
+    public async Task<BotDetailsDto> CreateBotAsync(string name, string personality, FileUpload? profilePicture, CancellationToken cancellationToken)
     {
-        var profilePictureUrl = await _fileStorage.SaveProfilePictureAsync(profilePicture, cancellationToken);
+        string profilePictureUrl = "";
+        if (profilePicture != null)
+        {
+            profilePictureUrl = await _fileStorage.SaveProfilePictureAsync(profilePicture, cancellationToken);
+        }
         var savedUser = await _userRepository.CreateUserAsync(new User(name, UserType.Bot, profilePictureUrl));
         
         var personalityData = JsonSerializer.Deserialize<PersonalityProfile>(personality);
