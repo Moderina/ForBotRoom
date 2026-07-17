@@ -17,16 +17,15 @@ public class WebSocketChatNotifier : IChatNotifier
         _chatService = chatService;
     }
 
-    public async Task SendMessageAsync(MessageDto message)
+    public async Task SendMessageAsync(MessageDto message, List<Guid> userIds)
     {
         Console.WriteLine($"Sending message to clients");
-        var members = await _chatService.GetHumanMembersOfChatAsync(message.ChatId);
-        Console.WriteLine($"Found {members.Count} users of this chat");
-        foreach (var user in members)
+        Console.WriteLine($"Found {userIds.Count} users of this chat");
+        foreach (var id in userIds)
         {
-            Console.WriteLine($"Sending message to {user.Id}");
+            Console.WriteLine($"Sending message to {id}");
             await _hub.Clients
-                .Group(user.Id.ToString())
+                .Group(id.ToString())
                 .SendAsync(
                     "ReceiveMessage",
                     message);

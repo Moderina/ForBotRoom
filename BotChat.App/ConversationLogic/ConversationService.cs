@@ -46,6 +46,8 @@ public class ConversationService : IConversationService
         if (response == null) return;
         Console.WriteLine(response);
         var messageDto = await _messageService.CreateMessageAsync(job.ChatId, bot.UserId, response);
-        await _chatNotifier.SendMessageAsync(messageDto);
+        var humanMembers = await _chatMemberRepository.GetHumanParticipantsAsync(job.ChatId);
+        var userIds = humanMembers.Select(m => m.UserId).ToList();
+        await _chatNotifier.SendMessageAsync(messageDto, userIds);
     }
 }
