@@ -12,9 +12,9 @@ public interface IBotService
     
     Task<Bot?> GetBotByIdAsync(Guid id);
     
-    Task<BotDetailsDto> CreateBotAsync(string name, string personalityProfile, FileUpload? fileUpload, CancellationToken cancellationToken);
+    Task<BotDetailsDto> CreateBotAsync(string name, PersonalityProfile personalityProfile, FileUpload? fileUpload, CancellationToken cancellationToken);
     
-    Task<BotDetailsDto?> UpdateBotAsync(Guid id, string Name, string Personality, FileUpload? profilePicture, CancellationToken cancellationToken);
+    Task<BotDetailsDto?> UpdateBotAsync(Guid id, string Name, PersonalityProfile? personalityProfile, FileUpload? profilePicture, CancellationToken cancellationToken);
     
     Task DeleteBotAsync(Guid id);
 }

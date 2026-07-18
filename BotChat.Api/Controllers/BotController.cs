@@ -1,6 +1,8 @@
+using System.Text.Json;
 using BotChat.App.BotLogic;
 using BotChat.Contracts.Bots;
 using BotChat.Contracts.Storage;
+using BotChat.Domain.Bots;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BotChat.Api.Controllers;
@@ -46,7 +48,11 @@ public class BotController : ControllerBase
                 ContentType = request.ProfilePicture.ContentType
             };
         }
-        var botdto = await _botService.CreateBotAsync(request.Name, request.PersonalityProfile, upload, cancellationToken);
+        
+        var personality = JsonSerializer.Deserialize<PersonalityProfile>(request.PersonalityProfile, new JsonSerializerOptions{PropertyNameCaseInsensitive = true})
+                          ?? new PersonalityProfile();
+        
+        var botdto = await _botService.CreateBotAsync(request.Name, personality, upload, cancellationToken);
         
         return Ok(botdto);
     }
@@ -64,7 +70,11 @@ public class BotController : ControllerBase
                 ContentType = request.ProfilePicture.ContentType
             };
         }
-        var botdto = await _botService.UpdateBotAsync(botId, request.Name, request.PersonalityProfile, upload, cancellationToken);
+        
+        var personality = JsonSerializer.Deserialize<PersonalityProfile>(request.PersonalityProfile, new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
+        Console.Write("personality:" + personality.CoreIdentity);
+        
+        var botdto = await _botService.UpdateBotAsync(botId, request.Name, personality, upload, cancellationToken);
         
         return Ok(botdto);
     }

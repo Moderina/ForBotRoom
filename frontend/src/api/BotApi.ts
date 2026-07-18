@@ -20,3 +20,10 @@ export function createBot(request : FormData): Promise<Bot> {
         body: request,
     }, true);
 }
+
+export function editBotRequest(botId : string, request : FormData): Promise<Bot> {
+    return api<Bot>(`/api/bots/${botId}`, {
+        method: "PUT",
+        body: request,
+    }, true);
+}

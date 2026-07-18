@@ -53,7 +53,10 @@ export const useBotStore = defineStore('bot', () => {
         }
         const newBot = await editBotRequest(selectedBot.value?.id, data);
 
-        bots.value.push(newBot);
+        const index = bots.value.findIndex(item => item.id === newBot.id);
+        if (index !== -1) {
+            bots.value[index] = newBot;
+        }
         selectedBot.value = newBot;
     }
 

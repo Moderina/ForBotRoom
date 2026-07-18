@@ -44,16 +44,9 @@ public class BotService : IBotService
     {
         var bot = await _botRepository.GetBotByIdAsync(id);
 
-        var personalitydto = new PersonalityProfileDto()
-        {
-            CoreIdentity = bot.PersonalityProfile.CoreIdentity,
-            Dislikes = bot.PersonalityProfile.Dislikes,
-            Likes = bot.PersonalityProfile.Likes,
-            Interests = bot.PersonalityProfile.Interests,
-            Personality = bot.PersonalityProfile.Personality,
-            TextingStyle = bot.PersonalityProfile.TextingStyle,
-            Example = bot.PersonalityProfile.Example
-        };
+        var personalitydto = new PersonalityProfileDto();
+        MapPersonalityData(bot.PersonalityProfile, personalitydto);
+        
         return new BotDetailsDto()
         {
             Id = bot.UserId,
@@ -63,7 +56,7 @@ public class BotService : IBotService
         };
     }
 
-    public async Task<BotDetailsDto> CreateBotAsync(string name, string personality, FileUpload? profilePicture, CancellationToken cancellationToken)
+    public async Task<BotDetailsDto> CreateBotAsync(string name, PersonalityProfile personalityProfile, FileUpload? profilePicture, CancellationToken cancellationToken)
     {
         string profilePictureUrl = "";
         if (profilePicture != null)
@@ -72,12 +65,11 @@ public class BotService : IBotService
         }
         var savedUser = await _userRepository.CreateUserAsync(new User(name, UserType.Bot, profilePictureUrl));
         
-        var personalityData = JsonSerializer.Deserialize<PersonalityProfile>(personality, new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
-        var newbot =await _botRepository.AddBotAsync(new Bot(savedUser.Id, personalityData));
+        var newbot =await _botRepository.AddBotAsync(new Bot(savedUser.Id, personalityProfile));
         return MakeDto(newbot);
     }
 
-    public async Task<BotDetailsDto?> UpdateBotAsync(Guid id, string name, string personality, FileUpload? profilePicture, CancellationToken cancellationToken)
+    public async Task<BotDetailsDto?> UpdateBotAsync(Guid id, string name, PersonalityProfile? personalityProfile, FileUpload? profilePicture, CancellationToken cancellationToken)
     {
         var savedBot = await _botRepository.GetBotByIdAsync(id);
         if (savedBot == null)
@@ -88,12 +80,11 @@ public class BotService : IBotService
         
         if (!string.IsNullOrWhiteSpace(name))
             savedBot.User.Name = name;
-        var personalityData = JsonSerializer.Deserialize<PersonalityProfile>(personality, new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
-        Console.WriteLine(personality);
-        if (personalityData != null)
+
+        if (personalityProfile != null)
         {
-            Console.WriteLine(personalityData.CoreIdentity);
-            savedBot.PersonalityProfile = personalityData;
+            Console.WriteLine(personalityProfile.CoreIdentity);
+            savedBot.PersonalityProfile = personalityProfile;
         }
         
         if (profilePicture != null)
