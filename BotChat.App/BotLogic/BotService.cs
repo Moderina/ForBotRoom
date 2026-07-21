@@ -102,28 +102,28 @@ public class BotService : IBotService
         return Task.CompletedTask;
     }
     
-    private void MapPersonalityData(PersonalityProfile profile, PersonalityProfileDto dto)
+    private void MapPersonalityData(PersonalityProfile personalityFrom, PersonalityProfileDto personalityTo)
     {
-        if (!string.IsNullOrWhiteSpace(dto.Personality))
-            profile.Personality = dto.Personality;
+        if (!string.IsNullOrWhiteSpace(personalityFrom.Personality))
+            personalityTo.Personality = personalityFrom.Personality;
 
-        if (!string.IsNullOrWhiteSpace(dto.Likes))
-            profile.Likes = dto.Likes;
+        if (!string.IsNullOrWhiteSpace(personalityFrom.Likes))
+            personalityTo.Likes = personalityFrom.Likes;
 
-        if (!string.IsNullOrWhiteSpace(dto.Dislikes))
-            profile.Dislikes = dto.Dislikes;
+        if (!string.IsNullOrWhiteSpace(personalityFrom.Dislikes))
+            personalityTo.Dislikes = personalityFrom.Dislikes;
         
-        if (!string.IsNullOrWhiteSpace(dto.CoreIdentity))
-            profile.CoreIdentity = dto.CoreIdentity;
+        if (!string.IsNullOrWhiteSpace(personalityFrom.CoreIdentity))
+            personalityTo.CoreIdentity = personalityFrom.CoreIdentity;
         
-        if (!string.IsNullOrWhiteSpace(dto.TextingStyle))
-            profile.TextingStyle = dto.TextingStyle;
+        if (!string.IsNullOrWhiteSpace(personalityFrom.TextingStyle))
+            personalityTo.TextingStyle = personalityFrom.TextingStyle;
         
-        if (!string.IsNullOrWhiteSpace(dto.Interests))
-            profile.Interests = dto.Interests;
+        if (!string.IsNullOrWhiteSpace(personalityFrom.Interests))
+            personalityTo.Interests = personalityFrom.Interests;
         
-        if (!string.IsNullOrWhiteSpace(dto.Example))
-            profile.Example = dto.Example;
+        if (!string.IsNullOrWhiteSpace(personalityFrom.Example))
+            personalityTo.Example = personalityFrom.Example;
     }
 
     private BotDetailsDto MakeDto(Bot bot)

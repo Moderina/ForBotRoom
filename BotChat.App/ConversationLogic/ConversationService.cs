@@ -45,9 +45,13 @@ public class ConversationService : IConversationService
         var response = await _llmService.GenerateAsyncTEST(PromptBuilder.Build(bot, history, membersNames));
         if (response == null) return;
         Console.WriteLine(response);
-        var messageDto = await _messageService.CreateMessageAsync(job.ChatId, bot.UserId, response);
         var humanMembers = await _chatMemberRepository.GetHumanParticipantsAsync(job.ChatId);
         var userIds = humanMembers.Select(m => m.UserId).ToList();
-        await _chatNotifier.SendMessageAsync(messageDto, userIds);
+        foreach (var text in response)
+        {
+            var messageDto = await _messageService.CreateMessageAsync(job.ChatId, bot.UserId, text);
+            await _chatNotifier.SendMessageAsync(messageDto, userIds);
+        }
+
     }
 }

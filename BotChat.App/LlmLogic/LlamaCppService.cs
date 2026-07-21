@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using BotChat.Domain.Llm;
 
 namespace BotChat.App.LlmLogic;
@@ -57,13 +58,14 @@ public class LlamaCppService : ILlmService
         return null;
     }
     
-    public async Task<string> GenerateAsyncTEST(LlmPrompt llmPrompt)
+    public async Task<string[]> GenerateAsyncTEST(LlmPrompt llmPrompt)
     {
         try
         {
             var request = new
             {
                 prompt = llmPrompt.Prompt,
+                grammar = "root ::= message+\nmessage ::= \"<message>\" text \"</message>\" \"\\n\"?\ntext ::= [^<]+",
                 stop = llmPrompt.Stop,
                 temperature = 0.7,
                 top_p = 0.9,
@@ -79,8 +81,19 @@ public class LlamaCppService : ILlmService
             response.EnsureSuccessStatusCode();
 
             var result = await response.Content.ReadFromJsonAsync<LlmCompletionResponse>();
-            Console.WriteLine(result);
-            return result.Content.Trim();
+            Console.WriteLine(result.Content);
+            var messages = Regex.Matches(result.Content.Trim(), @"<message>(.*?)</message>", RegexOptions.Singleline)
+                .Select(m => m.Groups[1].Value.Trim())
+                .Where(s => s.Length > 0)
+                .ToList();
+            if (messages.Count == 0)
+            {
+                messages = result.Content.Trim()
+                    .Split(new[] { ". ", "! ", "? " }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.Trim())
+                    .ToList();
+            }
+            return messages.ToArray();
         }
         catch (HttpRequestException ex)
         {
