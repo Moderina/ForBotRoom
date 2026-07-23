@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using BotChat.App.BotLogic;
 using BotChat.App.ChatLogic;
 using BotChat.App.LlmLogic;
@@ -47,11 +48,26 @@ public class ConversationService : IConversationService
         Console.WriteLine(response);
         var humanMembers = await _chatMemberRepository.GetHumanParticipantsAsync(job.ChatId);
         var userIds = humanMembers.Select(m => m.UserId).ToList();
-        foreach (var text in response)
+        foreach (var text in ParseResponse(response))
         {
             var messageDto = await _messageService.CreateMessageAsync(job.ChatId, bot.UserId, text);
             await _chatNotifier.SendMessageAsync(messageDto, userIds);
         }
+    }
 
+    private string[] ParseResponse(string response)
+    {
+        var messages = Regex.Matches(response.Trim(), @"<message>(.*?)</message>", RegexOptions.Singleline)
+            .Select(m => m.Groups[1].Value.Trim())
+            .Where(s => s.Length > 0)
+            .ToList();
+        if (messages.Count == 0)
+        {
+            messages = response.Trim()
+                .Split(new[] { ". ", "! ", "? " }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => s.Trim())
+                .ToList();
+        }
+        return messages.ToArray();
     }
 }

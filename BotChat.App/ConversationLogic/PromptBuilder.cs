@@ -57,6 +57,8 @@ public static class PromptBuilder
         var stop = new List<string> {"<|eot_id|>"};
         stop.AddRange(usernames.Select(user => "\n" + user));
         return new LlmPrompt(prompt, stop.ToArray());
+        var grammar = "root ::= message+\nmessage ::= \"<message>\" text \"</message>\" \"\\n\"?\ntext ::= [^<]+";
+        return new LlmPrompt(prompt, grammar, stop.ToArray());
     }
 
     public static string[] BuildPrompt_MoodChange(Bot agent, string agentName)
