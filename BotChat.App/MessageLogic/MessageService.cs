@@ -27,9 +27,15 @@ public class MessageService : IMessageService
         return dto;
     }
 
-    public Task<List<Message>> GetChatHistoryAsync(Guid chatId, int length = 20, long lastMessageTime = -1)
+    public Task<List<Message>> GetChatHistoryAsync(Guid chatId, int length = 40, long lastMessageTime = -1)
     {
         var time = lastMessageTime == -1 ? DateTime.Now : new DateTime(lastMessageTime);
         return _messageRepository.GetChatHistoryAsync(chatId, length, time);
+    }
+    
+    public Task<List<Message>> GetChatHistoryNewerThanAsync(Guid chatId, DateTime? lastMessageTime, int length = 40)
+    {
+        var time = lastMessageTime ?? DateTime.MinValue;
+        return _messageRepository.GetChatHistoryNewerThanAsync(chatId, time, length);
     }
 }

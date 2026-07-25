@@ -60,6 +60,8 @@ public class LlamaCppService : ILlmService
     
     public async Task<string> GenerateAsyncTEST(LlmPrompt llmPrompt)
     {
+        Console.WriteLine("Llm prompt");
+        Console.WriteLine(llmPrompt.Prompt);
         try
         {
             var request = new

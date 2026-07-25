@@ -30,6 +30,17 @@ public class MessageRepository : IMessageRepository
             .OrderBy(m => m.Timestamp)
             .ToListAsync();
     }
+    
+    public Task<List<Message>> GetChatHistoryNewerThanAsync(Guid chatId, DateTime lastMessageTime, int limit)
+    {
+        return _db.Messages
+            .Include(m => m.Author)
+            .Where(m => m.ChatId == chatId && m.Timestamp > lastMessageTime)
+            .OrderByDescending(m => m.Timestamp)
+            .Take(limit)
+            .OrderBy(m => m.Timestamp)
+            .ToListAsync();
+    }
 
     public Task<List<Message>> GetByChatAsync(Guid chatId)
     {

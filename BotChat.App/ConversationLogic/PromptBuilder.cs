@@ -6,12 +6,20 @@ namespace BotChat.App.ConversationLogic;
 
 public static class PromptBuilder
 {
-    public static LlmPrompt Build(Bot bot, List<Message> messages, List<string> usernames)
+    public static LlmPrompt Build(Bot bot, List<Message> messages, string chatSummary, List<string> usernames)
     {
         Console.WriteLine($"[{bot.User.Name}]");
         
         var groupchatInstruction = usernames.Count > 2 ? "participating in an online group chat with multiple people" :
             "participating in an online chat with one user";
+
+        var summaryInPrompt = string.IsNullOrEmpty(chatSummary)
+            ? ""
+            : $"""
+               # What's happened so far
+               {chatSummary}
+               
+               """;
 
         var prompt = $"""
              <|begin_of_text|><|start_header_id|>system<|end_header_id|>
@@ -47,7 +55,7 @@ public static class PromptBuilder
              <message>this sounds bad</message>
              <message>maybe you should check it out</message>
              <|eot_id|><|start_header_id|>user<|end_header_id|>
-             
+             {summaryInPrompt}
              Conversation:
              {messages.ToPrompt()}
              <|eot_id|><|start_header_id|>assistant<|end_header_id|>
@@ -56,9 +64,45 @@ public static class PromptBuilder
         
         var stop = new List<string> {"<|eot_id|>"};
         stop.AddRange(usernames.Select(user => "\n" + user));
-        return new LlmPrompt(prompt, stop.ToArray());
         var grammar = "root ::= message+\nmessage ::= \"<message>\" text \"</message>\" \"\\n\"?\ntext ::= [^<]+";
         return new LlmPrompt(prompt, grammar, stop.ToArray());
+    }
+
+    public static LlmPrompt BuildPrompt_SummarizeChat(string previousSummary, List<Message> messages)
+    {
+        var summaryInPrompt = string.IsNullOrEmpty(previousSummary)
+            ? ""
+            : $"""
+               Previous summary:
+               {previousSummary}
+
+               """;
+        var prompt = $"""
+                       <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+                       You are a conversation summarizer for a group chat memory system. You update a running summary of the conversation so far, incorporating new messages into it. 
+                       
+                       Rules:
+                       - Write in plain third-person prose, past tense.
+                       - Keep names of participants accurate.
+                       - Preserve important facts, decisions, plans, emotional context, and relationship developments.
+                       - Do not include minor small talk, greetings, or filler that has no lasting relevance.
+                       - Be concise — this summary will be reused as context for future replies, so prioritize information that will still matter later.
+                       - Do not invent anything not present in the messages.
+                       - Output only the updated summary text, nothing else.
+                       <|eot_id|><|start_header_id|>user<|end_header_id|>
+                       {summaryInPrompt}
+                       New messages to incorporate:
+                       {messages.ToPrompt()}
+                       <|eot_id|><|start_header_id|>assistant<|end_header_id|>
+                       Updated summary:
+                       """;
+        
+        //Also extract a list of standalone factual statements worth remembering long-term (preferences, relationships, plans, important events). Output them as a JSON array of strings after the summary, under a line "FACTS:".
+        var stop = new List<string> {"<|eot_id|>"};
+        var grammar = "";
+        return new LlmPrompt(prompt, grammar, stop.ToArray());
+        // npredict: 300-400
+        //temperature: 0.3-0.4
     }
 
     public static string[] BuildPrompt_MoodChange(Bot agent, string agentName)

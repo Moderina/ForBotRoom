@@ -24,6 +24,7 @@ public static class DI
         services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<IBotRepository, BotRepository>();
         services.AddScoped<IChatMemberRepository, ChatMemberRepository>();
+        services.AddScoped<IChatMemoryRepository, ChatMemoryRepository>();
         
         services.AddSingleton<IAppDataPath, AppDataPath>();
         services.AddScoped<IFileStorage, LocalFileStorage>();
