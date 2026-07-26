@@ -7,4 +7,5 @@ public class ChatMemory
     public Guid? LastSummarizedMessageId { get; set; }
     public DateTime? LastSummarizedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public bool IsSummarizing { get; set; } = false;
 }

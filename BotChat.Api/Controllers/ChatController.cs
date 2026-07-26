@@ -74,8 +74,7 @@ public class ChatController : ControllerBase
         
         var response = await _messageService.CreateMessageAsync(chatId, userId, request.Content);
         
-        await _conversationQueue.QueueAsync(
-            new ConversationJob(chatId));
+        await _conversationQueue.QueueAsync(new ConversationJob(chatId));
         
         return Ok(response);
     }

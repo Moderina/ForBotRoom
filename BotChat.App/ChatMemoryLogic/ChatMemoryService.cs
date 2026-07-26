@@ -26,15 +26,21 @@ public class ChatMemoryService : IChatMemoryService
         return "";
     }
 
-    public async Task<ChatMemory> UpdateMemoryAsync(ChatMemory memory, List<Message> messages)
+    public async Task<ChatMemory> UpdateAsync(ChatMemory memory, List<Message> messages)
     {
         var prompt = PromptBuilder.BuildPrompt_SummarizeChat(memory.Summary, messages);
         memory.Summary = await _llmService.GenerateAsyncTEST(prompt);
-        Console.WriteLine("New memory sumamary:" + memory.Summary);
+        Console.WriteLine("New memory summary:" + memory.Summary);
         memory.LastSummarizedMessageId = messages.Last().Id;
         memory.LastSummarizedAt = messages.Last().Timestamp;
         memory.UpdatedAt = DateTime.UtcNow;
+        memory.IsSummarizing = false;
         await _chatMemoryRepository.UpsertAsync(memory);
         return memory;
+    }
+    
+    public async Task SaveAsync(ChatMemory memory)
+    {
+        await _chatMemoryRepository.UpsertAsync(memory);
     }
 }

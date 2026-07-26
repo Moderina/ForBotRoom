@@ -14,15 +14,17 @@ public class ConversationService : IConversationService
     private readonly IMessageService _messageService;
     private readonly IChatMemberRepository _chatMemberRepository;
     private readonly IChatMemoryService _chatMemoryService;
+    private readonly ISummarizationQueue _summarizationQueue;
     private readonly ILlmService _llmService;
     private readonly IChatNotifier _chatNotifier;
 
-    public ConversationService(IBotService botService, IMessageService messageService, IChatMemberRepository chatMemberRepository, IChatMemoryService chatMemoryService, ILlmService llmService, IChatNotifier chatNotifier)
+    public ConversationService(IBotService botService, IMessageService messageService, IChatMemberRepository chatMemberRepository, IChatMemoryService chatMemoryService, ISummarizationQueue summarizationQueue, ILlmService llmService, IChatNotifier chatNotifier)
     {
         _botService = botService;
         _messageService = messageService;
         _chatMemberRepository = chatMemberRepository;
         _chatMemoryService = chatMemoryService;
+        _summarizationQueue = summarizationQueue;
         _llmService = llmService;
         _chatNotifier = chatNotifier;
     }
@@ -34,15 +36,9 @@ public class ConversationService : IConversationService
         var chatMemory = await _chatMemoryService.GetChatMemory(job.ChatId);
         var history = await _messageService.GetChatHistoryNewerThanAsync(job.ChatId, chatMemory.LastSummarizedAt, SummarizeBatchSize);
         Console.WriteLine("message count: " + history.Count);
-        if (history.Count == SummarizeBatchSize)
+        if (history.Count == SummarizeBatchSize && !chatMemory.IsSummarizing)
         {
-            Console.WriteLine("updating summary!");
-            //TODO: make updateMemory operation background job 
-            var historyForSummarize = history.Take(SummarizeBatchSize/2).ToList();
-            chatMemory = await _chatMemoryService.UpdateMemoryAsync(chatMemory, historyForSummarize);
-            // history = await _messageService.GetChatHistoryNewerThanAsync(job.ChatId, chatMemory.LastSummarizedAt, SummarizeBatchSize);
-            history = history.Skip(SummarizeBatchSize / 2).ToList();
-            Console.WriteLine("message count: " + history.Count);
+            await _summarizationQueue.QueueAsync(new SummarizeChatJob(job.ChatId, SummarizeBatchSize));
         }
         //TODO: nothification for null bot
         Console.WriteLine(bot);

@@ -17,6 +17,7 @@ public static class DI
         services.AddScoped<IBotService, BotService>();
         services.AddScoped<IConversationService, ConversationService>();
         services.AddScoped<IChatMemoryService, ChatMemoryService>();
+        services.AddScoped<ISummarizationService, SummarizationService>();
         return services;
     }
 }

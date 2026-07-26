@@ -30,7 +30,9 @@ public static class DI
         services.AddScoped<IFileStorage, LocalFileStorage>();
 
         services.AddSingleton<IConversationQueue, ConversationQueue>();
+        services.AddSingleton<ISummarizationQueue, SummarizationQueue>();
         services.AddHostedService<ConversationWorker>();
+        services.AddHostedService<SummarizationWorker>();
         
         var dbSettings = configuration.GetSection("Database").Get<DBSettings>();
         
