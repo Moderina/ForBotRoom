@@ -2,7 +2,7 @@ using BotChat.Domain.Bots;
 using BotChat.Domain.Chats;
 using BotChat.Domain.Llm;
 
-namespace BotChat.App.ConversationLogic;
+namespace BotChat.App.RespondLogic;
 
 public static class PromptBuilder
 {

@@ -1,12 +1,13 @@
 using System.Text.RegularExpressions;
 using BotChat.App.BotLogic;
 using BotChat.App.ChatLogic;
+using BotChat.App.ChatMemoryLogic;
 using BotChat.App.LlmLogic;
 using BotChat.Domain.Bots;
 
-namespace BotChat.App.ConversationLogic;
+namespace BotChat.App.RespondLogic;
 
-public class ConversationService : IConversationService
+public class RespondJobHandler : IJobHandler<RespondJob>
 {
     private const int SummarizeBatchSize = 40;
     
@@ -14,22 +15,22 @@ public class ConversationService : IConversationService
     private readonly IMessageService _messageService;
     private readonly IChatMemberRepository _chatMemberRepository;
     private readonly IChatMemoryService _chatMemoryService;
-    private readonly ISummarizationQueue _summarizationQueue;
+    private readonly IJobQueue<SummarizeChatJob> _jobQueue;
     private readonly ILlmService _llmService;
     private readonly IChatNotifier _chatNotifier;
-
-    public ConversationService(IBotService botService, IMessageService messageService, IChatMemberRepository chatMemberRepository, IChatMemoryService chatMemoryService, ISummarizationQueue summarizationQueue, ILlmService llmService, IChatNotifier chatNotifier)
+    
+    public RespondJobHandler(IBotService botService, IMessageService messageService, IChatMemberRepository chatMemberRepository, IChatMemoryService chatMemoryService, IJobQueue<SummarizeChatJob> jobQueue, ILlmService llmService, IChatNotifier chatNotifier)
     {
         _botService = botService;
         _messageService = messageService;
         _chatMemberRepository = chatMemberRepository;
         _chatMemoryService = chatMemoryService;
-        _summarizationQueue = summarizationQueue;
+        _jobQueue = jobQueue;
         _llmService = llmService;
         _chatNotifier = chatNotifier;
     }
     
-    public async Task GenerateBotResponseAsync(ConversationJob job)
+    public async Task HandleAsync(RespondJob job, CancellationToken cancellationToken)
     {
         var bot = await ChooseBotToRespond(job.ChatId);
         Console.WriteLine($"Bots name: ${bot.User.Name}");
@@ -38,7 +39,8 @@ public class ConversationService : IConversationService
         Console.WriteLine("message count: " + history.Count);
         if (history.Count == SummarizeBatchSize && !chatMemory.IsSummarizing)
         {
-            await _summarizationQueue.QueueAsync(new SummarizeChatJob(job.ChatId, SummarizeBatchSize));
+            await _jobQueue.QueueAsync(new SummarizeChatJob(job.ChatId, SummarizeBatchSize));
+            // await _summarizationQueue.QueueAsync(new SummarizeChatJob(job.ChatId, SummarizeBatchSize));
         }
         //TODO: nothification for null bot
         Console.WriteLine(bot);

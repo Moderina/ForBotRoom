@@ -1,6 +1,7 @@
 using BotChat.App.BotLogic;
 using BotChat.App.ChatLogic;
-using BotChat.App.ConversationLogic;
+using BotChat.App.ChatMemoryLogic;
+using BotChat.App.RespondLogic;
 using BotChat.App.Services;
 using BotChat.App.UserLogic;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,9 +16,9 @@ public static class DI
         services.AddScoped<IChatService, ChatService>();
         services.AddScoped<IMessageService, MessageService>();
         services.AddScoped<IBotService, BotService>();
-        services.AddScoped<IConversationService, ConversationService>();
+        services.AddScoped<IJobHandler<RespondJob>, RespondJobHandler>();
+        services.AddScoped<IJobHandler<SummarizeChatJob>, SummarizeChatJobHandler>();
         services.AddScoped<IChatMemoryService, ChatMemoryService>();
-        services.AddScoped<ISummarizationService, SummarizationService>();
         return services;
     }
 }

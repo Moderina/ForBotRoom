@@ -1,6 +1,6 @@
 using BotChat.Contracts.Chat;
 
-namespace BotChat.App.ConversationLogic;
+namespace BotChat.App.RespondLogic;
 
 public interface IChatNotifier
 {

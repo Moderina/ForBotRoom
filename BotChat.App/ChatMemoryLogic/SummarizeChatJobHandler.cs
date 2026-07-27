@@ -1,30 +1,28 @@
 using BotChat.App.ChatLogic;
 using BotChat.App.LlmLogic;
 
-namespace BotChat.App.ConversationLogic;
+namespace BotChat.App.ChatMemoryLogic;
 
-public class SummarizationService : ISummarizationService
+public class SummarizeChatJobHandler : IJobHandler<SummarizeChatJob>
 {
     private const int SummarizeBatchSize = 40;
     
     private readonly IChatMemoryService _chatMemoryService;
     private readonly IMessageService _messageService;
-    private readonly ILlmService _llmService;
 
-    public SummarizationService(IChatMemoryService chatMemoryService, IMessageService messageService, ILlmService llmService)
+    public SummarizeChatJobHandler(IChatMemoryService chatMemoryService, IMessageService messageService)
     {
         _chatMemoryService = chatMemoryService;
         _messageService = messageService;
-        _llmService = llmService;
     }
     
     
-    public async Task GenerateChatSummaryAsync(SummarizeChatJob job)
+    public async Task HandleAsync(SummarizeChatJob job, CancellationToken cancellationToken)
     {
         Console.WriteLine("updating summary!");
         var chatMemory = await _chatMemoryService.GetChatMemory(job.ChatId);
 
-        var history = await _messageService.GetChatHistoryNewerThanAsync(job.ChatId, chatMemory.LastSummarizedAt, job.SummaryMessagesBatch);
+        var history = await _messageService.GetChatHistoryNewerThanAsync(job.ChatId, chatMemory.LastSummarizedAt, job.SummarizeBatchSize);
         if (history.Count < SummarizeBatchSize)
             return; 
 

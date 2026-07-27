@@ -1,5 +1,6 @@
+using BotChat.App;
 using BotChat.App.ChatLogic;
-using BotChat.App.ConversationLogic;
+using BotChat.App.RespondLogic;
 using BotChat.Contracts.Chat;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,13 +12,13 @@ public class ChatController : ControllerBase
 {
     private readonly IChatService _chatService;
     private readonly IMessageService _messageService;
-    private readonly IConversationQueue _conversationQueue;
+    private readonly IJobQueue<RespondJob> _jobQueue;
     
-    public ChatController(IChatService chatService, IMessageService messageService, IConversationQueue conversationqueue)
+    public ChatController(IChatService chatService, IMessageService messageService, IJobQueue<RespondJob> jobQueue)
     {
         _chatService = chatService;
         _messageService = messageService;
-        _conversationQueue = conversationqueue;
+        _jobQueue = jobQueue;
     }
     
     [HttpGet]
@@ -74,7 +75,7 @@ public class ChatController : ControllerBase
         
         var response = await _messageService.CreateMessageAsync(chatId, userId, request.Content);
         
-        await _conversationQueue.QueueAsync(new ConversationJob(chatId));
+        await _jobQueue.QueueAsync(new RespondJob(chatId));
         
         return Ok(response);
     }

@@ -1,9 +1,11 @@
 using BotChat.App;
 using BotChat.App.BotLogic;
 using BotChat.App.ChatLogic;
+using BotChat.App.ChatMemoryLogic;
 using BotChat.App.Config;
-using BotChat.App.ConversationLogic;
+using BotChat.App.RespondLogic;
 using BotChat.App.UserLogic;
+using BotChat.Infrastructure.Background;
 using BotChat.Infrastructure.Persistant;
 using BotChat.Infrastructure.Persistant.Repositories;
 using BotChat.Infrastructure.Persistant.Storage;
@@ -28,11 +30,11 @@ public static class DI
         
         services.AddSingleton<IAppDataPath, AppDataPath>();
         services.AddScoped<IFileStorage, LocalFileStorage>();
-
-        services.AddSingleton<IConversationQueue, ConversationQueue>();
-        services.AddSingleton<ISummarizationQueue, SummarizationQueue>();
-        services.AddHostedService<ConversationWorker>();
-        services.AddHostedService<SummarizationWorker>();
+        
+        services.AddSingleton<IJobQueue<RespondJob>, JobQueue<RespondJob>>();
+        services.AddSingleton<IJobQueue<SummarizeChatJob>, JobQueue<SummarizeChatJob>>();
+        services.AddHostedService<QueueWorker<RespondJob>>();
+        services.AddHostedService<QueueWorker<SummarizeChatJob>>();
         
         var dbSettings = configuration.GetSection("Database").Get<DBSettings>();
         

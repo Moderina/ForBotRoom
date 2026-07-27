@@ -1,8 +1,8 @@
-using BotChat.App.ChatLogic;
 using BotChat.App.LlmLogic;
+using BotChat.App.RespondLogic;
 using BotChat.Domain.Chats;
 
-namespace BotChat.App.ConversationLogic;
+namespace BotChat.App.ChatMemoryLogic;
 
 public class ChatMemoryService : IChatMemoryService
 {

@@ -1,4 +1,4 @@
-using BotChat.App.ConversationLogic;
+using BotChat.App.ChatMemoryLogic;
 using BotChat.Domain.Chats;
 
 namespace BotChat.Infrastructure.Persistant.Repositories;

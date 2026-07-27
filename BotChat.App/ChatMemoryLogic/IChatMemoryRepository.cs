@@ -1,6 +1,6 @@
 using BotChat.Domain.Chats;
 
-namespace BotChat.App.ConversationLogic;
+namespace BotChat.App.ChatMemoryLogic;
 
 public interface IChatMemoryRepository
 {

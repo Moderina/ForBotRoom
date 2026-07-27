@@ -1,6 +1,6 @@
 using BotChat.Api.Hubs;
 using BotChat.App.ChatLogic;
-using BotChat.App.ConversationLogic;
+using BotChat.App.RespondLogic;
 using BotChat.Contracts.Chat;
 using Microsoft.AspNetCore.SignalR;
 
