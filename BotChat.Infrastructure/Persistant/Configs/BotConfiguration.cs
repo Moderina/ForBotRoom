@@ -1,11 +1,10 @@
 using System.Text.Json;
-using BotChat.Domain;
 using BotChat.Domain.Bots;
 using BotChat.Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BotChat.Infrastructure.Configs;
+namespace BotChat.Infrastructure.Persistant.Configs;
 
 public class BotConfiguration : IEntityTypeConfiguration<Bot>
 {

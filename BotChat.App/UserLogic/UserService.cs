@@ -1,7 +1,6 @@
-using BotChat.App.UserLogic;
 using BotChat.Contracts.User;
 
-namespace BotChat.App.Services;
+namespace BotChat.App.UserLogic;
 
 public class UserService : IUserService
 {

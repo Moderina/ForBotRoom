@@ -1,4 +1,4 @@
-using BotChat.App.ChatLogic;
+using BotChat.App.MessageLogic;
 using BotChat.Domain.Chats;
 using Microsoft.EntityFrameworkCore;
 

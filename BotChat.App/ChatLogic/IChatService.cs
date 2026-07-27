@@ -1,5 +1,5 @@
 using BotChat.Contracts.Chat;
-using BotChat.Domain;
+using BotChat.Domain.Users;
 
 namespace BotChat.App.ChatLogic;
 

@@ -1,9 +1,9 @@
-using BotChat.Domain;
 using BotChat.Domain.Chats;
+using BotChat.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BotChat.Infrastructure.Configs;
+namespace BotChat.Infrastructure.Persistant.Configs;
 
 public class MessageConfiguration : IEntityTypeConfiguration<Message>
 {

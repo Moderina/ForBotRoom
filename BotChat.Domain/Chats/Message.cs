@@ -1,3 +1,5 @@
+using BotChat.Domain.Users;
+
 namespace BotChat.Domain.Chats;
 
 public class Message

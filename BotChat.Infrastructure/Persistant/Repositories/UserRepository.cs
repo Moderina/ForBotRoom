@@ -1,5 +1,5 @@
 using BotChat.App.UserLogic;
-using BotChat.Domain;
+using BotChat.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace BotChat.Infrastructure.Persistant.Repositories;

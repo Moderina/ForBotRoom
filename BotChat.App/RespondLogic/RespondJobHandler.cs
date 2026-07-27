@@ -3,6 +3,7 @@ using BotChat.App.BotLogic;
 using BotChat.App.ChatLogic;
 using BotChat.App.ChatMemoryLogic;
 using BotChat.App.LlmLogic;
+using BotChat.App.MessageLogic;
 using BotChat.Domain.Bots;
 
 namespace BotChat.App.RespondLogic;

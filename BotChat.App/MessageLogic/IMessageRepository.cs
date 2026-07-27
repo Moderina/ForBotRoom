@@ -1,6 +1,6 @@
 using BotChat.Domain.Chats;
 
-namespace BotChat.App.ChatLogic;
+namespace BotChat.App.MessageLogic;
 
 public interface IMessageRepository
 {

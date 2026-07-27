@@ -1,5 +1,6 @@
 using BotChat.App;
 using BotChat.App.ChatLogic;
+using BotChat.App.MessageLogic;
 using BotChat.App.RespondLogic;
 using BotChat.Contracts.Chat;
 using Microsoft.AspNetCore.Mvc;

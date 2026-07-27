@@ -1,8 +1,8 @@
 using BotChat.App.BotLogic;
 using BotChat.App.ChatLogic;
 using BotChat.App.ChatMemoryLogic;
+using BotChat.App.MessageLogic;
 using BotChat.App.RespondLogic;
-using BotChat.App.Services;
 using BotChat.App.UserLogic;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -2,7 +2,7 @@ using BotChat.Domain.Chats;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BotChat.Infrastructure.Configs;
+namespace BotChat.Infrastructure.Persistant.Configs;
 
 public class ChatConfiguration : IEntityTypeConfiguration<Chat>
 {

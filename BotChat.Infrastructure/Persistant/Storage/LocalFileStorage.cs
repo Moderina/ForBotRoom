@@ -1,4 +1,4 @@
-using BotChat.App;
+using BotChat.App.Storage;
 using BotChat.Contracts.Storage;
 using Microsoft.Extensions.Configuration;
 

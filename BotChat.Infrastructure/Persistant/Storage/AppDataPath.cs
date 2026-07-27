@@ -1,4 +1,4 @@
-using BotChat.App;
+using BotChat.App.Storage;
 
 namespace BotChat.Infrastructure.Persistant.Storage;
 

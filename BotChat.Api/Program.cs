@@ -1,18 +1,10 @@
 using System.Text.Json;
-using BotChat.Api.Controllers;
 using BotChat.Api.Hubs;
-using BotChat.App;
-using BotChat.App.BotLogic;
-using BotChat.App.ChatLogic;
 using BotChat.App.DI;
 using BotChat.App.LlmLogic;
 using BotChat.App.RespondLogic;
-using BotChat.App.Services;
-using BotChat.App.UserLogic;
 using BotChat.Infrastructure.DI;
 using BotChat.Infrastructure.Persistant;
-using BotChat.Infrastructure.Persistant.Repositories;
-using BotChat.Infrastructure.Persistant.Storage;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 

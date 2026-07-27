@@ -1,6 +1,6 @@
-using BotChat.Domain;
 using BotChat.Domain.Bots;
 using BotChat.Domain.Chats;
+using BotChat.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace BotChat.Infrastructure.Persistant;

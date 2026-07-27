@@ -1,5 +1,5 @@
+using BotChat.App.MessageLogic;
 using BotChat.Contracts.Chat;
-using BotChat.Domain;
 using BotChat.Domain.Chats;
 using BotChat.Domain.Users;
 

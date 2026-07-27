@@ -1,6 +1,6 @@
 using BotChat.Contracts.Storage;
 
-namespace BotChat.App;
+namespace BotChat.App.Storage;
 
 public interface IFileStorage
 {

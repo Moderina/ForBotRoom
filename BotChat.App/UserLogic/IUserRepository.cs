@@ -1,10 +1,12 @@
+using BotChat.Domain.Users;
+
 namespace BotChat.App.UserLogic;
 
 public interface IUserRepository
 {
-    Task<Domain.User?> GetUserAsync();
+    Task<User?> GetUserAsync();
     
-    Task<Domain.User> CreateUserAsync(Domain.User user);
+    Task<User> CreateUserAsync(User user);
     
-    Task<Domain.User> UpdateUserAsync(Domain.User user);
+    Task<User> UpdateUserAsync(User user);
 }

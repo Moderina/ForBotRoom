@@ -1,7 +1,6 @@
 using BotChat.Domain.Bots;
-using BotChat.Domain.Users;
 
-namespace BotChat.Domain;
+namespace BotChat.Domain.Users;
 
 public class User
 {
