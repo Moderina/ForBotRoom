@@ -21,7 +21,7 @@ public class SummarizeChatJobHandler : IJobHandler<SummarizeChatJob>
         Console.WriteLine("updating summary!");
         var chatMemory = await _chatMemoryService.GetChatMemory(job.ChatId);
 
-        var history = await _messageService.GetChatHistoryNewerThanAsync(job.ChatId, chatMemory.LastSummarizedAt, job.SummarizeBatchSize);
+        var history = await _messageService.GetChatHistoryNewerThanAsync(job.ChatId, chatMemory.LastSummarizedAt);
         if (history.Count < SummarizeBatchSize)
             return; 
 

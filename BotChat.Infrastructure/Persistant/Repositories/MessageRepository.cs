@@ -31,13 +31,11 @@ public class MessageRepository : IMessageRepository
             .ToListAsync();
     }
     
-    public Task<List<Message>> GetChatHistoryNewerThanAsync(Guid chatId, DateTime lastMessageTime, int limit)
+    public Task<List<Message>> GetChatHistoryNewerThanAsync(Guid chatId, DateTime lastMessageTime)
     {
         return _db.Messages
             .Include(m => m.Author)
             .Where(m => m.ChatId == chatId && m.Timestamp > lastMessageTime)
-            .OrderByDescending(m => m.Timestamp)
-            .Take(limit)
             .OrderBy(m => m.Timestamp)
             .ToListAsync();
     }

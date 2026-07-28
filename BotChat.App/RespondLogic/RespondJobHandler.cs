@@ -36,11 +36,11 @@ public class RespondJobHandler : IJobHandler<RespondJob>
         var bot = await ChooseBotToRespond(job.ChatId);
         Console.WriteLine($"Bots name: ${bot.User.Name}");
         var chatMemory = await _chatMemoryService.GetChatMemory(job.ChatId);
-        var history = await _messageService.GetChatHistoryNewerThanAsync(job.ChatId, chatMemory.LastSummarizedAt, SummarizeBatchSize);
+        var history = await _messageService.GetChatHistoryNewerThanAsync(job.ChatId, chatMemory.LastSummarizedAt);
         Console.WriteLine("message count: " + history.Count);
-        if (history.Count == SummarizeBatchSize && !chatMemory.IsSummarizing)
+        if (history.Count >= SummarizeBatchSize && !chatMemory.IsSummarizing)
         {
-            await _jobQueue.QueueAsync(new SummarizeChatJob(job.ChatId, SummarizeBatchSize));
+            await _jobQueue.QueueAsync(new SummarizeChatJob(job.ChatId));
             // await _summarizationQueue.QueueAsync(new SummarizeChatJob(job.ChatId, SummarizeBatchSize));
         }
         //TODO: nothification for null bot
