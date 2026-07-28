@@ -35,8 +35,9 @@ public static class DI
         
         services.AddSingleton<IJobQueue<RespondJob>, JobQueue<RespondJob>>();
         services.AddSingleton<IJobQueue<SummarizeChatJob>, JobQueue<SummarizeChatJob>>();
-        services.AddHostedService<QueueWorker<RespondJob>>();
-        services.AddHostedService<QueueWorker<SummarizeChatJob>>();
+        services.AddHostedService<LlmDispatchWorker>();
+        // services.AddHostedService<QueueWorker<RespondJob>>();
+        // services.AddHostedService<QueueWorker<SummarizeChatJob>>();
         
         var dbSettings = configuration.GetSection("Database").Get<DBSettings>();
         

@@ -1,4 +1,6 @@
 using BotChat.App;
+using BotChat.App.ChatMemoryLogic;
+using BotChat.App.RespondLogic;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -7,6 +9,8 @@ namespace BotChat.Infrastructure.Background;
 public class QueueWorker<TJob> : BackgroundService
 {
     private readonly IJobQueue<TJob> _queue;
+    private readonly IJobQueue<RespondJob> _responseQueue;
+    private readonly IJobQueue<SummarizeChatJob> _summarizeQueue;
     private readonly IServiceScopeFactory _scopeFactory;
 
     public QueueWorker(IJobQueue<TJob> queue, IServiceScopeFactory scopeFactory)
