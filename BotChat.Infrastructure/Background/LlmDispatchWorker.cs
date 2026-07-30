@@ -29,14 +29,14 @@ public class LlmDispatchWorker : BackgroundService
             // 1. Always try the high-priority (response) queue first, non-blocking.
             if (_responseQueue.TryDequeue(out var responseJob))
             {
-                await HandleAsync(responseJob, stoppingToken);
+                await DispatchAsync(responseJob, stoppingToken);
                 continue; // loop again, re-check response queue before touching summarization
             }
 
             // 2. No response job waiting — check summarization, still non-blocking.
             if (_summarizeQueue.TryDequeue(out var summarizeJob))
             {
-                await HandleAsync(summarizeJob, stoppingToken);
+                await DispatchAsync(summarizeJob, stoppingToken);
                 continue;
             }
 
@@ -48,17 +48,31 @@ public class LlmDispatchWorker : BackgroundService
         }
     }
 
-    private async Task HandleAsync<TJob>(TJob job, CancellationToken ct)
+    private async Task DispatchAsync<TJob>(TJob job, CancellationToken ct)
     {
         using var scope = _scopeFactory.CreateScope();
         var handler = scope.ServiceProvider.GetRequiredService<IJobHandler<TJob>>();
-        try
+        
+        var slotReleased = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        var handlerTask = Task.Run(async () =>
         {
-            await handler.HandleAsync(job, ct);
-        }
-        catch (Exception ex)
-        {
-            Console.Write(ex + ": Job {JobType} failed: " + typeof(TJob).Name);
-        }
+            try
+            {
+                await handler.HandleAsync(job, () => slotReleased.TrySetResult(), ct);
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex + ": Job {JobType} failed: " + typeof(TJob).Name);
+            }
+            finally
+            {
+                slotReleased
+                    .TrySetResult(); // safety net: release even if handler never called it (early return, exception before LLM call, etc.)
+                scope.Dispose();
+            }
+        }, ct);
+        
+        await slotReleased.Task;
     }
 }

@@ -30,7 +30,7 @@ public class QueueWorker<TJob> : BackgroundService
 
             try
             {
-                await handler.HandleAsync(job, stoppingToken);
+                await handler.HandleAsync(job, () => { }, stoppingToken);
             }
             catch (Exception ex)
             {

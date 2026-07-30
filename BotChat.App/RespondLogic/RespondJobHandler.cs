@@ -31,7 +31,7 @@ public class RespondJobHandler : IJobHandler<RespondJob>
         _chatNotifier = chatNotifier;
     }
     
-    public async Task HandleAsync(RespondJob job, CancellationToken cancellationToken)
+    public async Task HandleAsync(RespondJob job, Action releaseLlmSlot, CancellationToken cancellationToken)
     {
         var bot = await ChooseBotToRespond(job.ChatId);
         Console.WriteLine($"Bots name: ${bot.User.Name}");

@@ -16,7 +16,7 @@ public class SummarizeChatJobHandler : IJobHandler<SummarizeChatJob>
     }
     
     
-    public async Task HandleAsync(SummarizeChatJob job, CancellationToken cancellationToken)
+    public async Task HandleAsync(SummarizeChatJob job, Action releaseLlmSlot, CancellationToken cancellationToken)
     {
         Console.WriteLine("updating summary!");
         var chatMemory = await _chatMemoryService.GetChatMemory(job.ChatId);
