@@ -30,21 +30,27 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="list-name">Contact List</div>
-  <ul class="chats-list">
-    <li v-for="chat in chatStore.chats" :key="chat.id" @click="selectChat(chat)"
-        class="group flex items-center justify-between px-3 py-2 hover:bg-gray-100 cursor-pointer"
-    >
-      <div>{{ chat.name }}</div>
-      <button
-          @click.stop="removeChat(chat)"
-          class="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+  <div class="chat-list">
+    <div class="chat-list-header">
+      <span>Direct Messages</span>
+      <button class="icon-btn" @click="showCreateModal = true" title="Add chat">+</button>
+    </div>
+      
+    <ul class="chats">
+      
+      <li v-for="chat in chatStore.chats" :key="chat.id" @click="selectChat(chat)"
+          class="chat-item"
       >
-        🗑️
-      </button>
-    </li>
-    <button @click="showCreateModal = true">Add Chat</button>
-  </ul>
+        <span class="chat-name">{{ chat.name }}</span>
+        <button
+            @click.stop="removeChat(chat)"
+            class="chat-remove"
+        >
+          🗑️
+        </button>
+      </li>
+    </ul>
+  </div>
 
   <CreateChatModal
       v-if="showCreateModal"
@@ -56,23 +62,94 @@ onMounted(() => {
 
 <style scoped>
 
-.list-name {
-  padding: 10px;
-  text-align: center;
-  border-bottom: #0052ff solid 5px;
-  font-family: fantasy;
+.chat-list {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 8px;
 }
 
-.chats-list {
-  padding: 5px;
-  margin: 0;
+
+.chat-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
-.chats-list li {
-  background: rgba(102, 153, 255, 0.1);
+.icon-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: none;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover {
+  background: var(--accent);
+}
+
+.chats {
   list-style: none;
-  padding: 20px 15px;
-  margin: 5px;
-  border-radius: 10px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
 }
+
+.chat-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 2px;
+  background: var(--bg-chat);
+}
+
+.chat-item:hover {
+  background: var(--bg-elevated);
+}
+
+.chat-item:hover .chat-remove {
+  opacity: 1;
+}
+
+.chat-name {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-remove {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 2px;
+}
+
+.chat-remove:hover {
+  color: var(--danger);
+}
+
 </style>

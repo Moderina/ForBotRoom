@@ -45,7 +45,11 @@ watch(messages, async () => {
 <template>
   <div class="chat-view">
 <!--    <div class="chat-title">{{ chatName ? 'Chatting with ' + chatName : 'Select a chat' }}</div>-->
-    <div class="chat-title">{{ chatTitle }}</div>
+    <div class="chat-header">
+      <span class="hash">#</span>
+      <span class="chat-title">{{ chatTitle }}</span>
+    </div>
+
 
     <div class="chat">
       <div class="messages" ref="messagesDiv">
@@ -97,6 +101,30 @@ watch(messages, async () => {
   display: flex;
   flex-direction: column;
 }
+
+.chat-header {
+  height: 48px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--bg-app);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+.hash {
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.chat-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+
+
 
 .chat {
   background: #1e1e1e;

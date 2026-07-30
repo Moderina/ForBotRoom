@@ -82,57 +82,60 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="bot-manager flex-1 border-l-4">
+  <div class="bot-manager">
     <div class="bot-list">
-      <h2>Agents</h2>
-
-      <button @click="newBot">+ New Agent</button>
+      <div class="panel-header">
+        <span>Characters</span>
+        <button class="icon-btn" @click="newBot" title="New agent">+</button>
+      </div>
 
       <ul>
         <li
-            class="m-2 p-1 border-2 bg-gray-900 border-gray-600 rounded-md"
+            class="bot-item"
             v-for="bot in botStore.bots"
             :key="bot.id ? bot.id : undefined"
             @click="editBot(bot)"
         >
-          {{ bot.name }}
+          <span class="bot-name">{{ bot.name }}</span>
         </li>
       </ul>
     </div>
 
     <div class="bot-form">
-      <div class="flex justify-between">
+      <div class="form-header">
         <h2>{{ isEditing ? "Edit Bot" : "Create Bot" }}</h2>
-        <h2>{{ activeInput }}</h2>
+        <span class="active-field" v-if="activeInput">{{ activeInput }}</span>
       </div>
 
       <div class="avatar-picker">
         <img
             :src="avatarPreview ?? '/default-avatar.png'"
             class="avatar-preview"
-            alt="Bot avatar"
+            alt="Character avatar"
         />
 
-        <input
-            type="file"
-            accept="image/*"
-            @change="onAvatarSelected"
-        />
+        <label class="file-btn">
+          Change avatar
+          <input type="file" accept="image/*" @change="onAvatarSelected" hidden />
+        </label>
+
       </div>
 
-      <input v-model="form.name" placeholder="Name" @focusin="changeActiveInput('Name')" />
 
+      <input v-model="form.name" placeholder="Character name" @focusin="changeActiveInput('Name')" />
+
+      
       <textarea v-model="form.personalityProfile.coreIdentity" placeholder="Core Identity" @focusin="changeActiveInput('Core Identity')" />
 
       <textarea v-model="form.personalityProfile.personality" placeholder="Personality" @focusin="changeActiveInput('Personality')" />
 
-      <textarea v-model="form.personalityProfile.textingStyle" placeholder="textingStyle" @focusin="changeActiveInput('TextingStyle')" />
+      <textarea v-model="form.personalityProfile.textingStyle" placeholder="Texting Style" @focusin="changeActiveInput('TextingStyle')" />
 
-      <textarea v-model="form.personalityProfile.interests" placeholder="interests" @focusin="changeActiveInput('Interests')" />
+      <textarea v-model="form.personalityProfile.interests" placeholder="Interests" @focusin="changeActiveInput('Interests')" />
 
-      <textarea v-model="form.personalityProfile.likes" placeholder="likes" @focusin="changeActiveInput('Likes')" />
+      <textarea v-model="form.personalityProfile.likes" placeholder="Likes" @focusin="changeActiveInput('Likes')" />
 
-      <textarea v-model="form.personalityProfile.dislikes" placeholder="dislikes" @focusin="changeActiveInput('Dislikes')" />
+      <textarea v-model="form.personalityProfile.dislikes" placeholder="Dislikes" @focusin="changeActiveInput('Dislikes')" />
 
       <!--      <input-->
       <!--          type="number"-->
@@ -143,18 +146,10 @@ onMounted(() => {
       <!--      />-->
 
       <div class="buttons">
-        <button @click="saveBot">Save
-          {{ isEditing ? "Update" : "Create" }}
-        </button>
-
-        <button
-            v-if="isEditing"
-            @click="deleteBot()"
-            class="danger"
-        >
-          Delete
-        </button>
+        <button class="primary" @click="saveBot">{{ isEditing ? "Update" : "Create" }}</button>
+        <button v-if="isEditing" class="danger" @click="deleteBot()">Delete</button>
       </div>
+
     </div>
   </div>
 </template>
@@ -162,23 +157,108 @@ onMounted(() => {
 <style scoped>
 .bot-manager {
   display: flex;
-  gap: 20px;
-  padding: 20px;
+
   height: 100%;
   width: 100%;
 }
 
 .bot-list {
-  width: 250px;
-  flex: 1;
-}
-
-.bot-form {
-  flex: 2;
+  width: 200px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  border-right: 1px solid var(--bg-app);
+  padding: 12px 8px;
 }
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.icon-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: none;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: var(--accent);
+}
+
+.bot-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+}
+
+.bot-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 2px;
+}
+
+.bot-item:hover {
+  background: var(--bg-elevated);
+}
+
+.bot-name {
+  font-size: 0.88rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.bot-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 24px;
+  overflow-y: auto;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.form-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.active-field {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  background: rgba(88, 101, 242, 0.15);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
 
 .avatar-picker {
   display: flex;
@@ -191,8 +271,22 @@ onMounted(() => {
   height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  background: #222;
+  background: var(--bg-elevated);
   border: 1px solid #444;
+}
+
+.file-btn {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--bg-elevated);
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.file-btn:hover {
+  background: var(--bg-elevated-hover);
 }
 
 .bot-form textarea {
@@ -214,16 +308,50 @@ onMounted(() => {
   color: #fff;
 }
 
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.field textarea:focus {
+  min-height: 88px;
+}
+
+
 .buttons {
   display: flex;
   gap: 10px;
+  margin-top: 8px;
 }
 
-button {
-  padding: 6px 12px;
+.buttons button {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.primary:hover {
+  background: var(--accent-hover);
 }
 
 .danger {
-  background: darkred;
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
 }
+
+.danger:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
 </style>
